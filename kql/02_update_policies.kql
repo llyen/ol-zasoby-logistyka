@@ -1,0 +1,100 @@
+// 02_update_policies.kql — curated real-time objects for OL Logistics
+// Cel pliku: utworzyć warstwę przyspieszającą dashboard i alerty. W demie używamy funkcji
+// oraz materialized views; w produkcji update policies mogą przepisywać dane do tabel curated.
+
+// -----------------------------------------------------------------------------
+// CurrentTransportPositions
+// Po co istnieje: zwraca ostatnią znaną pozycję, ETA, status i opóźnienie każdego transportu.
+// Przyspiesza: kafelki mapy transportów, top delayed transports, alert delay >30 min.
+// Retencja źródła: TransportTracking 30 dni; widok bieżący jest obliczany po arg_max.
+// -----------------------------------------------------------------------------
+.create-or-alter function with (folder="curated", docstring="Latest transport position and ETA per transport") CurrentTransportPositions() {
+    TransportTracking
+    | summarize arg_max(timestamp, *) by transport_id
+    | project transport_id, allocation_id, timestamp, lat, lon, speed_kmh, eta, status, delay_min
+}
+
+// Materialized view dla bieżących transportów. Używać w środowiskach, gdzie dashboard
+// odświeża się często i pełny skan telemetrii jest kosztowny.
+.create-or-alter materialized-view with (backfill=true, lookback=2d) CurrentTransportPositions_mv on table TransportTracking {
+    TransportTracking
+    | summarize arg_max(timestamp, lat, lon, speed_kmh, eta, status, delay_min, allocation_id) by transport_id
+}
+
+// -----------------------------------------------------------------------------
+// CurrentShelterOccupancy
+// Po co istnieje: zwraca najnowsze obłożenie punktu przyjęcia i procent pojemności.
+// Przyspiesza: kafelek shelters >90%, mapa punktów, alert przepełnienia.
+// Retencja źródła: ShelterOccupancy 90 dni; widok bieżący po arg_max.
+// -----------------------------------------------------------------------------
+.create-or-alter function with (folder="curated", docstring="Latest shelter occupancy with occupancy percentage") CurrentShelterOccupancy() {
+    ShelterOccupancy
+    | summarize arg_max(timestamp, *) by shelter_id
+    | extend occupancy_pct = todouble(occupied) / capacity
+    | project shelter_id, timestamp, capacity, occupied, medical_care_required, occupancy_pct
+}
+
+.create-or-alter materialized-view with (backfill=true, lookback=14d) CurrentShelterOccupancy_mv on table ShelterOccupancy {
+    ShelterOccupancy
+    | summarize arg_max(timestamp, capacity, occupied, medical_care_required) by shelter_id
+}
+
+// -----------------------------------------------------------------------------
+// CumulativeConsumptionByVoivodeshipResource
+// Po co istnieje: narastające zużycie per zasób i województwo.
+// Przyspiesza: prognoza wyczerpania, kafelek trendu zużycia, Data Agent pytania „kiedy zabraknie”.
+// Retencja źródła: Consumption 180 dni; agregacja dzienna może być przechowywana dłużej.
+// -----------------------------------------------------------------------------
+.create-or-alter function with (folder="curated", docstring="Daily and cumulative consumption by voivodeship and resource") CumulativeConsumptionByVoivodeshipResource() {
+    Consumption
+    | summarize daily_consumed=sum(consumed_qty) by voivodeship_code, resource_type_id, day=startofday(timestamp)
+    | order by voivodeship_code asc, resource_type_id asc, day asc
+    | serialize
+    | extend cumulative_consumed=row_cumsum(daily_consumed, voivodeship_code != prev(voivodeship_code) or resource_type_id != prev(resource_type_id))
+}
+
+.create-or-alter materialized-view with (backfill=true, lookback=180d) DailyConsumption_mv on table Consumption {
+    Consumption
+    | summarize daily_consumed=sum(consumed_qty) by voivodeship_code, resource_type_id, day=startofday(timestamp)
+}
+
+// -----------------------------------------------------------------------------
+// DailyStockSnapshot
+// Po co istnieje: dzienny stan magazynowy per magazyn i zasób.
+// Przyspiesza: raport „Obraz zasobów kraju”, miary dni zapasu i trend dostępności.
+// Retencja: stan dzienny 365 dni; w demie fact_stock jest snapshotem wejściowym.
+// -----------------------------------------------------------------------------
+.create-or-alter function with (folder="curated", docstring="Daily stock snapshot by warehouse and resource") DailyStockSnapshot() {
+    StockSnapshot
+    | summarize arg_max(snapshot_date, available_qty, reserved_qty, in_transit_qty, expiry_date) by warehouse_id, resource_type_id, day=startofday(snapshot_date)
+}
+
+// Jeśli stany są ładowane z Lakehouse jako tabela KQL `StockSnapshot`, materialized view
+// utrzymuje najnowszy odczyt dzienny. W lokalnym repo odpowiednikiem jest `fact_stock.csv`.
+.create-or-alter materialized-view with (backfill=true, lookback=365d) DailyStockSnapshot_mv on table StockSnapshot {
+    StockSnapshot
+    | summarize arg_max(snapshot_date, available_qty, reserved_qty, in_transit_qty, expiry_date) by warehouse_id, resource_type_id, day=startofday(snapshot_date)
+}
+
+// -----------------------------------------------------------------------------
+// OpenPriorityDemand
+// Po co istnieje: lista pilnych wniosków bez dostawy lub bez zaakceptowanej alokacji.
+// Przyspiesza: alert P1 >2h, kolejka WCZK, pulpit RCB.
+// Retencja: Demand 90 dni; Allocation 90 dni.
+// -----------------------------------------------------------------------------
+.create-or-alter function with (folder="curated", docstring="Priority 1 demand not delivered") OpenPriorityDemand() {
+    Demand
+    | where priority == 1
+    | join kind=leftouter Allocation on demand_id
+    | where isempty(allocation_id) or status !in ("delivered")
+    | project demand_id, timestamp, gmina_code, powiat_code, voivodeship_code, resource_type_id, quantity, priority, allocation_id, status, eta
+}
+
+// Retention policies dla tabel strumieniowych. Wartości są demonstracyjne; w produkcji
+// retencja zależy od wymagań audytu, kosztu i klasyfikacji informacji.
+.alter-merge table TransportTracking policy retention softdelete = 30d recoverability = enabled
+.alter-merge table ShelterOccupancy policy retention softdelete = 90d recoverability = enabled
+.alter-merge table Demand policy retention softdelete = 90d recoverability = enabled
+.alter-merge table Allocation policy retention softdelete = 90d recoverability = enabled
+.alter-merge table RoadStatus policy retention softdelete = 180d recoverability = enabled
+.alter-merge table Consumption policy retention softdelete = 180d recoverability = enabled

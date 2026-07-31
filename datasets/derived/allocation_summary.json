@@ -1,0 +1,21 @@
+{
+  "optimized": {
+    "served_demands": 420,
+    "served_pct": 100.0,
+    "priority1_served": 168,
+    "priority1_served_pct": 100.0,
+    "avg_delivery_time_h": 1.7
+  },
+  "fifo": {
+    "served_demands": 420,
+    "served_pct": 100.0,
+    "priority1_served": 168,
+    "priority1_served_pct": 100.0,
+    "avg_delivery_time_h": 4.27
+  },
+  "improvement": {
+    "avg_time_saved_h": 2.57,
+    "priority1_extra_served": 0,
+    "served_demands_extra": 0
+  }
+}

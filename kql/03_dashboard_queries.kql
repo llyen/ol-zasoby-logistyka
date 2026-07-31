@@ -1,0 +1,74 @@
+// 03_dashboard_queries.kql — Real-Time Dashboard tiles for OL Logistics
+
+// Tile 1: KPI transport delays by status
+CurrentTransportPositions()
+| summarize transports=count(), delayed=countif(delay_min > 30), avg_delay=round(avg(delay_min),1) by status
+
+// Tile 2: Map of current transport positions
+CurrentTransportPositions()
+| project transport_id, allocation_id, lat, lon, speed_kmh, eta, status, delay_min
+
+// Tile 3: Shelters above 90% capacity
+CurrentShelterOccupancy()
+| where occupancy_pct > 0.9
+| project shelter_id, occupied, capacity, occupancy_pct=round(occupancy_pct*100,1), medical_care_required
+| order by occupancy_pct desc
+
+// Tile 4: Shelter occupancy trend by hour
+ShelterOccupancy
+| summarize occupied=sum(occupied), capacity=sum(capacity) by bin(timestamp, 1h)
+| extend occupancy_pct=round(100.0*occupied/capacity,1)
+
+// Tile 5: Priority 1 SLA queue
+Demand
+| where priority == 1
+| join kind=leftouter Allocation on demand_id
+| summarize open=countif(isempty(allocation_id)), allocated=countif(isnotempty(allocation_id)), delivered=countif(status == "delivered") by bin(timestamp, 6h)
+
+// Tile 6: New demand volume by voivodeship
+Demand
+| summarize demand_count=count(), total_qty=sum(quantity), p1=countif(priority == 1) by voivodeship_code, bin(timestamp, 1d)
+| order by timestamp desc, p1 desc
+
+// Tile 7: Road status map
+RoadStatus
+| summarize arg_max(timestamp, *) by road_segment_id
+| project road_segment_id, road_name, status, reason, lat, lon, voivodeship_code
+
+// Tile 8: Consumption trend by resource
+Consumption
+| summarize consumed=sum(consumed_qty) by resource_type_id, bin(timestamp, 1d)
+| order by timestamp asc
+
+// Tile 9: Allocation status funnel
+Allocation
+| summarize allocations=count(), qty=sum(allocated_qty) by status, decision_level
+| order by allocations desc
+
+// Tile 10: Financial SPO-2 pipeline
+FinancialRequest
+| summarize requests=count(), amount_pln=sum(amount_pln) by status
+| order by amount_pln desc
+
+// Tile 11: Top delayed transports with ETA
+CurrentTransportPositions()
+| top 20 by delay_min desc
+| project transport_id, status, delay_min, eta, lat, lon
+
+// Tile 12: Open demand without allocation
+Demand
+| join kind=leftouter Allocation on demand_id
+| where isempty(allocation_id)
+| summarize open=count(), qty=sum(quantity), p1=countif(priority == 1) by voivodeship_code, resource_type_id
+| order by p1 desc, qty desc
+
+// Tile 13: Priority heatmap by resource
+Demand
+| summarize p1=countif(priority == 1), all_demands=count(), qty=sum(quantity) by resource_type_id, bin(timestamp, 1d)
+| extend p1_share=round(100.0*p1/all_demands,1)
+
+// Tile 14: Medical care pressure in shelters
+ShelterOccupancy
+| summarize arg_max(timestamp, *) by shelter_id
+| summarize medical=sum(medical_care_required), occupied=sum(occupied), capacity=sum(capacity)
+| extend medical_share=round(100.0*medical/occupied,1)

@@ -1,0 +1,4 @@
+scenario,expected_effect,mitigation
+fala_dociera_do_wroclawia,"+18% zapotrzebowan na schronienie i wode, presja na magazyny WH dolnoslaskie",przerzut z wielkopolskie i lubuskie
+droga_A4_nieprzejezdna,czas dostawy +35-60% na osi Opole-Wroclaw,trasa DK94 + mosty pontonowe
+zapotrzebowanie_plus_50pct,spadek SLA priorytetu 1 bez uruchomienia ARS,SPO-2 oraz zamowienia ramowe

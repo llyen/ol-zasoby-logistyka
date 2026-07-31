@@ -1,0 +1,31 @@
+flowchart LR
+    subgraph Sources[Zrodla syntetyczne]
+        D[Zapotrzebowania gmin/powiatow]
+        T[Telemetria transportow]
+        S[Oblozenie punktow]
+        R[Status drog]
+        C[Zuzycie zasobow]
+        F[Wnioski SPO-2]
+    end
+    D --> ES[Fabric Eventstream]
+    T --> ES
+    S --> ES
+    ES --> EH[Eventhouse / KQL DB]
+    R --> LH[Lakehouse]
+    C --> LH
+    F --> LH
+    DIM[dim_* + fact_stock] --> LH
+    LH --> NB[Notebooki: coverage, optimizer, forecast, what-if]
+    NB --> DER[derived outputs]
+    EH --> RTD[Real-Time Dashboard]
+    LH --> PBI[Power BI semantic model]
+    DER --> PBI
+    EH --> ACT[Data Activator]
+    DER --> ACT
+    PBI --> APP[Fabric App / Rayfin]
+    EH --> APP
+    APP --> WB[Write-back Delta tables]
+    WB --> LH
+    PBI --> AG[Data Agent]
+    EH --> AG
+    ACT --> TEAMS[Teams / e-mail / Power Automate]

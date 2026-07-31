@@ -1,0 +1,6 @@
+{
+  "affected_gminas": 226,
+  "avg_access_time_h": 0.97,
+  "p90_access_time_h": 1.52,
+  "coverage_gaps_gt_6h": 0
+}

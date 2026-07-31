@@ -1,0 +1,18 @@
+{
+  "dim_gmina.csv": 2477,
+  "dim_powiat.csv": 380,
+  "dim_resource_type.csv": 20,
+  "dim_shelter.csv": 400,
+  "dim_supplier.csv": 45,
+  "dim_transport_unit.csv": 180,
+  "dim_voivodeship.csv": 16,
+  "dim_warehouse.csv": 60,
+  "fact_financial_request.csv": 90,
+  "fact_stock.csv": 1200,
+  "fact_allocation.jsonl": 520,
+  "fact_consumption.jsonl": 14300,
+  "fact_demand.jsonl": 960,
+  "fact_road_status.jsonl": 260,
+  "fact_shelter_occupancy.jsonl": 4400,
+  "fact_transport_tracking.jsonl": 16901
+}

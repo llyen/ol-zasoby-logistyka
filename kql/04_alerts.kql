@@ -1,0 +1,62 @@
+// 04_alerts.kql — alert queries for Activator / KQL alerts
+
+// Alert 1: Transport delayed >30 minutes
+CurrentTransportPositions()
+| where delay_min > 30
+| project transport_id, allocation_id, delay_min, eta, status, lat, lon
+
+// Alert 2: Shelter above 90% capacity
+CurrentShelterOccupancy()
+| where occupancy_pct > 0.9
+| project shelter_id, occupied, capacity, occupancy_pct, medical_care_required
+
+// Alert 3: Priority 1 demand unserved for more than 2 hours
+Demand
+| where priority == 1 and timestamp < ago(2h)
+| join kind=leftouter Allocation on demand_id
+| where isempty(allocation_id) or status !in ("accepted", "in_transit", "delivered")
+| project demand_id, timestamp, gmina_code, resource_type_id, quantity, priority
+
+// Alert 4: Road segment impassable
+RoadStatus
+| summarize arg_max(timestamp, *) by road_segment_id
+| where status == "nieprzejezdna"
+| project road_segment_id, road_name, reason, voivodeship_code, lat, lon, timestamp
+
+// Alert 5: Depletion forecast below 2 days
+DepletionForecast
+| where days_of_stock < 2
+| project voivodeship_code, resource_type_id, available_qty, daily_consumption, days_of_stock, recommendation
+
+// Alert 6: SPO-2 financial request above 5M PLN and not approved by MF
+FinancialRequest
+| where amount_pln > 5000000 and status !in ("MF_approved", "paid")
+| project financial_request_id, timestamp, applicant, voivodeship_code, amount_pln, purpose, status, approval_path
+
+// Alert 7: Demand spike above 50% in 6 hours
+Demand
+| summarize cnt=count() by voivodeship_code, bin(timestamp, 6h)
+| serialize
+| extend prev_cnt=prev(cnt), prev_voivodeship=prev(voivodeship_code)
+| where voivodeship_code == prev_voivodeship and cnt > prev_cnt * 1.5
+
+// Alert 8: Transport stopped or very slow while not delivered
+CurrentTransportPositions()
+| where status !in ("delivered") and speed_kmh < 5
+| project transport_id, allocation_id, speed_kmh, eta, delay_min, lat, lon
+
+// Alert 9: High medical care load in shelter
+CurrentShelterOccupancy()
+| extend medical_share=todouble(medical_care_required) / occupied
+| where medical_share > 0.12 and occupied > 50
+| project shelter_id, occupied, capacity, medical_care_required, medical_share
+
+// Alert 10: Allocation accepted but no recent transport telemetry
+Allocation
+| where status in ("accepted", "in_transit")
+| join kind=leftouter (
+    TransportTracking
+    | summarize last_seen=max(timestamp) by allocation_id
+) on allocation_id
+| where isempty(last_seen) or last_seen < ago(30m)
+| project allocation_id, demand_id, warehouse_id, status, last_seen
