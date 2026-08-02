@@ -1,0 +1,9 @@
+table hydro_readings
+	sourceLineageTag: [dbo].[hydro_readings]
+
+	partition hydro_readings = entity
+		mode: directLake
+		source
+			entityName: hydro_readings
+			schemaName: dbo
+			expressionSource: 'DirectLake - OL_COP24_Lakehouse'

@@ -1,0 +1,9 @@
+table dim_river_gauge
+	sourceLineageTag: [dbo].[dim_river_gauge]
+
+	partition dim_river_gauge = entity
+		mode: directLake
+		source
+			entityName: dim_river_gauge
+			schemaName: dbo
+			expressionSource: 'DirectLake - OL_COP24_Lakehouse'

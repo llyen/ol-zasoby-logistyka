@@ -1,0 +1,9 @@
+table kis_voivodeship
+	sourceLineageTag: [dbo].[kis_voivodeship]
+
+	partition kis_voivodeship = entity
+		mode: directLake
+		source
+			entityName: kis_voivodeship
+			schemaName: dbo
+			expressionSource: 'DirectLake - OL_COP24_Lakehouse'

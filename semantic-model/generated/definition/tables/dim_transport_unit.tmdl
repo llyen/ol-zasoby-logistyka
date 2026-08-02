@@ -1,0 +1,57 @@
+table dim_transport_unit
+	sourceLineageTag: [dbo].[dim_transport_unit]
+
+	column transport_unit_id
+		dataType: string
+		sourceLineageTag: transport_unit_id
+		summarizeBy: none
+		sourceColumn: transport_unit_id
+
+	column transport_type
+		dataType: string
+		sourceLineageTag: transport_type
+		summarizeBy: none
+		sourceColumn: transport_type
+
+	column payload_t
+		dataType: double
+		sourceLineageTag: payload_t
+		summarizeBy: sum
+		sourceColumn: payload_t
+
+	column avg_speed_kmh
+		dataType: double
+		sourceLineageTag: avg_speed_kmh
+		summarizeBy: sum
+		sourceColumn: avg_speed_kmh
+
+	column base_warehouse_id
+		dataType: string
+		sourceLineageTag: base_warehouse_id
+		summarizeBy: none
+		sourceColumn: base_warehouse_id
+
+	column available_from
+		dataType: dateTime
+		sourceLineageTag: available_from
+		summarizeBy: none
+		sourceColumn: available_from
+
+	column available
+		dataType: int64
+		formatString: 0
+		sourceLineageTag: available
+		summarizeBy: sum
+		sourceColumn: available
+
+	column ingested_at
+		dataType: dateTime
+		sourceLineageTag: ingested_at
+		summarizeBy: none
+		sourceColumn: ingested_at
+
+	partition dim_transport_unit = entity
+		mode: directLake
+		source
+			entityName: dim_transport_unit
+			expressionSource: 'DirectLake - OL_LOG_Lakehouse'

@@ -1,0 +1,9 @@
+table escalation_events
+	sourceLineageTag: [dbo].[escalation_events]
+
+	partition escalation_events = entity
+		mode: directLake
+		source
+			entityName: escalation_events
+			schemaName: dbo
+			expressionSource: 'DirectLake - OL_COP24_Lakehouse'

@@ -1,0 +1,9 @@
+table telecom_events
+	sourceLineageTag: [dbo].[telecom_events]
+
+	partition telecom_events = entity
+		mode: directLake
+		source
+			entityName: telecom_events
+			schemaName: dbo
+			expressionSource: 'DirectLake - OL_COP24_Lakehouse'

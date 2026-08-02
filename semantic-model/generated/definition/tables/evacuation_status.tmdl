@@ -1,0 +1,9 @@
+table evacuation_status
+	sourceLineageTag: [dbo].[evacuation_status]
+
+	partition evacuation_status = entity
+		mode: directLake
+		source
+			entityName: evacuation_status
+			schemaName: dbo
+			expressionSource: 'DirectLake - OL_COP24_Lakehouse'

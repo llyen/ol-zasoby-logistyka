@@ -1,0 +1,9 @@
+table dim_institution
+	sourceLineageTag: [dbo].[dim_institution]
+
+	partition dim_institution = entity
+		mode: directLake
+		source
+			entityName: dim_institution
+			schemaName: dbo
+			expressionSource: 'DirectLake - OL_COP24_Lakehouse'

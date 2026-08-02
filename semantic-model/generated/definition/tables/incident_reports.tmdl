@@ -1,0 +1,9 @@
+table incident_reports
+	sourceLineageTag: [dbo].[incident_reports]
+
+	partition incident_reports = entity
+		mode: directLake
+		source
+			entityName: incident_reports
+			schemaName: dbo
+			expressionSource: 'DirectLake - OL_COP24_Lakehouse'

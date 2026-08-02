@@ -1,0 +1,62 @@
+table fact_road_status
+	sourceLineageTag: [dbo].[fact_road_status]
+
+	column lat
+		dataType: double
+		sourceLineageTag: lat
+		summarizeBy: sum
+		sourceColumn: lat
+
+	column lon
+		dataType: double
+		sourceLineageTag: lon
+		summarizeBy: sum
+		sourceColumn: lon
+
+	column reason
+		dataType: string
+		sourceLineageTag: reason
+		summarizeBy: none
+		sourceColumn: reason
+
+	column road_name
+		dataType: string
+		sourceLineageTag: road_name
+		summarizeBy: none
+		sourceColumn: road_name
+
+	column road_segment_id
+		dataType: string
+		sourceLineageTag: road_segment_id
+		summarizeBy: none
+		sourceColumn: road_segment_id
+
+	column status
+		dataType: string
+		sourceLineageTag: status
+		summarizeBy: none
+		sourceColumn: status
+
+	column timestamp
+		dataType: dateTime
+		sourceLineageTag: timestamp
+		summarizeBy: none
+		sourceColumn: timestamp
+
+	column voivodeship_code
+		dataType: string
+		sourceLineageTag: voivodeship_code
+		summarizeBy: none
+		sourceColumn: voivodeship_code
+
+	column ingested_at
+		dataType: dateTime
+		sourceLineageTag: ingested_at
+		summarizeBy: none
+		sourceColumn: ingested_at
+
+	partition fact_road_status = entity
+		mode: directLake
+		source
+			entityName: fact_road_status
+			expressionSource: 'DirectLake - OL_LOG_Lakehouse'

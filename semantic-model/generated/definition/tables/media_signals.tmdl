@@ -1,0 +1,9 @@
+table media_signals
+	sourceLineageTag: [dbo].[media_signals]
+
+	partition media_signals = entity
+		mode: directLake
+		source
+			entityName: media_signals
+			schemaName: dbo
+			expressionSource: 'DirectLake - OL_COP24_Lakehouse'

@@ -1,0 +1,45 @@
+table fact_consumption
+	sourceLineageTag: [dbo].[fact_consumption]
+
+	column consumed_qty
+		dataType: int64
+		formatString: 0
+		sourceLineageTag: consumed_qty
+		summarizeBy: sum
+		sourceColumn: consumed_qty
+
+	column resource_type_id
+		dataType: string
+		sourceLineageTag: resource_type_id
+		summarizeBy: none
+		sourceColumn: resource_type_id
+
+	column site_id
+		dataType: string
+		sourceLineageTag: site_id
+		summarizeBy: none
+		sourceColumn: site_id
+
+	column timestamp
+		dataType: dateTime
+		sourceLineageTag: timestamp
+		summarizeBy: none
+		sourceColumn: timestamp
+
+	column voivodeship_code
+		dataType: string
+		sourceLineageTag: voivodeship_code
+		summarizeBy: none
+		sourceColumn: voivodeship_code
+
+	column ingested_at
+		dataType: dateTime
+		sourceLineageTag: ingested_at
+		summarizeBy: none
+		sourceColumn: ingested_at
+
+	partition fact_consumption = entity
+		mode: directLake
+		source
+			entityName: fact_consumption
+			expressionSource: 'DirectLake - OL_LOG_Lakehouse'

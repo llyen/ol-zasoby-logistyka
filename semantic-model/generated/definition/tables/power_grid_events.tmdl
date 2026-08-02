@@ -1,0 +1,9 @@
+table power_grid_events
+	sourceLineageTag: [dbo].[power_grid_events]
+
+	partition power_grid_events = entity
+		mode: directLake
+		source
+			entityName: power_grid_events
+			schemaName: dbo
+			expressionSource: 'DirectLake - OL_COP24_Lakehouse'

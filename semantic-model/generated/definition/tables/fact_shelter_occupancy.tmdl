@@ -1,0 +1,47 @@
+table fact_shelter_occupancy
+	sourceLineageTag: [dbo].[fact_shelter_occupancy]
+
+	column capacity
+		dataType: int64
+		formatString: 0
+		sourceLineageTag: capacity
+		summarizeBy: sum
+		sourceColumn: capacity
+
+	column medical_care_required
+		dataType: int64
+		formatString: 0
+		sourceLineageTag: medical_care_required
+		summarizeBy: sum
+		sourceColumn: medical_care_required
+
+	column occupied
+		dataType: int64
+		formatString: 0
+		sourceLineageTag: occupied
+		summarizeBy: sum
+		sourceColumn: occupied
+
+	column shelter_id
+		dataType: string
+		sourceLineageTag: shelter_id
+		summarizeBy: none
+		sourceColumn: shelter_id
+
+	column timestamp
+		dataType: dateTime
+		sourceLineageTag: timestamp
+		summarizeBy: none
+		sourceColumn: timestamp
+
+	column ingested_at
+		dataType: dateTime
+		sourceLineageTag: ingested_at
+		summarizeBy: none
+		sourceColumn: ingested_at
+
+	partition fact_shelter_occupancy = entity
+		mode: directLake
+		source
+			entityName: fact_shelter_occupancy
+			expressionSource: 'DirectLake - OL_LOG_Lakehouse'

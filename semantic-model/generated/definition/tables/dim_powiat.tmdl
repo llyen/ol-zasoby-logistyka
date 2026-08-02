@@ -1,0 +1,44 @@
+table dim_powiat
+	sourceLineageTag: [dbo].[dim_powiat]
+
+	column powiat_code
+		dataType: string
+		sourceLineageTag: powiat_code
+		summarizeBy: none
+		sourceColumn: powiat_code
+
+	column powiat_name
+		dataType: string
+		sourceLineageTag: powiat_name
+		summarizeBy: none
+		sourceColumn: powiat_name
+
+	column voivodeship_code
+		dataType: string
+		sourceLineageTag: voivodeship_code
+		summarizeBy: none
+		sourceColumn: voivodeship_code
+
+	column lat
+		dataType: double
+		sourceLineageTag: lat
+		summarizeBy: sum
+		sourceColumn: lat
+
+	column lon
+		dataType: double
+		sourceLineageTag: lon
+		summarizeBy: sum
+		sourceColumn: lon
+
+	column ingested_at
+		dataType: dateTime
+		sourceLineageTag: ingested_at
+		summarizeBy: none
+		sourceColumn: ingested_at
+
+	partition dim_powiat = entity
+		mode: directLake
+		source
+			entityName: dim_powiat
+			expressionSource: 'DirectLake - OL_LOG_Lakehouse'

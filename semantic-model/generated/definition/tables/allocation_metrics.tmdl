@@ -1,0 +1,52 @@
+table allocation_metrics
+	sourceLineageTag: [dbo].[allocation_metrics]
+
+	column method
+		dataType: string
+		sourceLineageTag: method
+		summarizeBy: none
+		sourceColumn: method
+
+	column served_demands
+		dataType: int64
+		formatString: 0
+		sourceLineageTag: served_demands
+		summarizeBy: sum
+		sourceColumn: served_demands
+
+	column served_pct
+		dataType: double
+		sourceLineageTag: served_pct
+		summarizeBy: sum
+		sourceColumn: served_pct
+
+	column priority1_served
+		dataType: int64
+		formatString: 0
+		sourceLineageTag: priority1_served
+		summarizeBy: sum
+		sourceColumn: priority1_served
+
+	column priority1_served_pct
+		dataType: double
+		sourceLineageTag: priority1_served_pct
+		summarizeBy: sum
+		sourceColumn: priority1_served_pct
+
+	column avg_delivery_time_h
+		dataType: double
+		sourceLineageTag: avg_delivery_time_h
+		summarizeBy: sum
+		sourceColumn: avg_delivery_time_h
+
+	column time_saved_h
+		dataType: double
+		sourceLineageTag: time_saved_h
+		summarizeBy: sum
+		sourceColumn: time_saved_h
+
+	partition allocation_metrics = entity
+		mode: directLake
+		source
+			entityName: allocation_metrics
+			expressionSource: 'DirectLake - OL_LOG_Lakehouse'

@@ -1,0 +1,9 @@
+table escalation_recommendations
+	sourceLineageTag: [dbo].[escalation_recommendations]
+
+	partition escalation_recommendations = entity
+		mode: directLake
+		source
+			entityName: escalation_recommendations
+			schemaName: dbo
+			expressionSource: 'DirectLake - OL_COP24_Lakehouse'

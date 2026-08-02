@@ -1,0 +1,53 @@
+table fact_stock
+	sourceLineageTag: [dbo].[fact_stock]
+
+	column warehouse_id
+		dataType: string
+		sourceLineageTag: warehouse_id
+		summarizeBy: none
+		sourceColumn: warehouse_id
+
+	column resource_type_id
+		dataType: string
+		sourceLineageTag: resource_type_id
+		summarizeBy: none
+		sourceColumn: resource_type_id
+
+	column available_qty
+		dataType: int64
+		formatString: 0
+		sourceLineageTag: available_qty
+		summarizeBy: sum
+		sourceColumn: available_qty
+
+	column reserved_qty
+		dataType: int64
+		formatString: 0
+		sourceLineageTag: reserved_qty
+		summarizeBy: sum
+		sourceColumn: reserved_qty
+
+	column in_transit_qty
+		dataType: int64
+		formatString: 0
+		sourceLineageTag: in_transit_qty
+		summarizeBy: sum
+		sourceColumn: in_transit_qty
+
+	column expiry_date
+		dataType: string
+		sourceLineageTag: expiry_date
+		summarizeBy: none
+		sourceColumn: expiry_date
+
+	column ingested_at
+		dataType: dateTime
+		sourceLineageTag: ingested_at
+		summarizeBy: none
+		sourceColumn: ingested_at
+
+	partition fact_stock = entity
+		mode: directLake
+		source
+			entityName: fact_stock
+			expressionSource: 'DirectLake - OL_LOG_Lakehouse'

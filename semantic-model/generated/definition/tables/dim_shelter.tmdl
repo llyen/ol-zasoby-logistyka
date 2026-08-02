@@ -1,0 +1,78 @@
+table dim_shelter
+	sourceLineageTag: [dbo].[dim_shelter]
+
+	column shelter_id
+		dataType: string
+		sourceLineageTag: shelter_id
+		summarizeBy: none
+		sourceColumn: shelter_id
+
+	column shelter_name
+		dataType: string
+		sourceLineageTag: shelter_name
+		summarizeBy: none
+		sourceColumn: shelter_name
+
+	column shelter_type
+		dataType: string
+		sourceLineageTag: shelter_type
+		summarizeBy: none
+		sourceColumn: shelter_type
+
+	column gmina_code
+		dataType: string
+		sourceLineageTag: gmina_code
+		summarizeBy: none
+		sourceColumn: gmina_code
+
+	column capacity
+		dataType: int64
+		formatString: 0
+		sourceLineageTag: capacity
+		summarizeBy: sum
+		sourceColumn: capacity
+
+	column has_kitchen
+		dataType: int64
+		formatString: 0
+		sourceLineageTag: has_kitchen
+		summarizeBy: sum
+		sourceColumn: has_kitchen
+
+	column has_medical_room
+		dataType: int64
+		formatString: 0
+		sourceLineageTag: has_medical_room
+		summarizeBy: sum
+		sourceColumn: has_medical_room
+
+	column accessible_disabled
+		dataType: int64
+		formatString: 0
+		sourceLineageTag: accessible_disabled
+		summarizeBy: sum
+		sourceColumn: accessible_disabled
+
+	column lat
+		dataType: double
+		sourceLineageTag: lat
+		summarizeBy: sum
+		sourceColumn: lat
+
+	column lon
+		dataType: double
+		sourceLineageTag: lon
+		summarizeBy: sum
+		sourceColumn: lon
+
+	column ingested_at
+		dataType: dateTime
+		sourceLineageTag: ingested_at
+		summarizeBy: none
+		sourceColumn: ingested_at
+
+	partition dim_shelter = entity
+		mode: directLake
+		source
+			entityName: dim_shelter
+			expressionSource: 'DirectLake - OL_LOG_Lakehouse'

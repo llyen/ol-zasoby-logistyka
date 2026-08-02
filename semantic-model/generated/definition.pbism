@@ -1,0 +1,7 @@
+{
+  "settings": {
+    "qnaEnabled": false
+  },
+  "version": "5.0",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/semanticModel/definitionProperties/1.0.0/schema.json"
+}

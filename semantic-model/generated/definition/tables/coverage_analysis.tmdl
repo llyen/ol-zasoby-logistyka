@@ -1,0 +1,80 @@
+table coverage_analysis
+	sourceLineageTag: [dbo].[coverage_analysis]
+
+	column gmina_code
+		dataType: string
+		sourceLineageTag: gmina_code
+		summarizeBy: none
+		sourceColumn: gmina_code
+
+	column gmina_name
+		dataType: string
+		sourceLineageTag: gmina_name
+		summarizeBy: none
+		sourceColumn: gmina_name
+
+	column voivodeship_code
+		dataType: string
+		sourceLineageTag: voivodeship_code
+		summarizeBy: none
+		sourceColumn: voivodeship_code
+
+	column lat
+		dataType: double
+		sourceLineageTag: lat
+		summarizeBy: sum
+		sourceColumn: lat
+
+	column lon
+		dataType: double
+		sourceLineageTag: lon
+		summarizeBy: sum
+		sourceColumn: lon
+
+	column nearest_warehouse_id
+		dataType: string
+		sourceLineageTag: nearest_warehouse_id
+		summarizeBy: none
+		sourceColumn: nearest_warehouse_id
+
+	column nearest_warehouse_name
+		dataType: string
+		sourceLineageTag: nearest_warehouse_name
+		summarizeBy: none
+		sourceColumn: nearest_warehouse_name
+
+	column distance_km
+		dataType: double
+		sourceLineageTag: distance_km
+		summarizeBy: sum
+		sourceColumn: distance_km
+
+	column access_time_h
+		dataType: double
+		sourceLineageTag: access_time_h
+		summarizeBy: sum
+		sourceColumn: access_time_h
+
+	column second_access_time_h
+		dataType: double
+		sourceLineageTag: second_access_time_h
+		summarizeBy: sum
+		sourceColumn: second_access_time_h
+
+	column third_access_time_h
+		dataType: double
+		sourceLineageTag: third_access_time_h
+		summarizeBy: sum
+		sourceColumn: third_access_time_h
+
+	column coverage_gap
+		dataType: boolean
+		sourceLineageTag: coverage_gap
+		summarizeBy: none
+		sourceColumn: coverage_gap
+
+	partition coverage_analysis = entity
+		mode: directLake
+		source
+			entityName: coverage_analysis
+			expressionSource: 'DirectLake - OL_LOG_Lakehouse'

@@ -1,0 +1,35 @@
+model Model
+	culture: pl-PL
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: pl-PL
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["DirectLake - OL_LOG_Lakehouse"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_ProTooling = ["DirectLakeOnOneLakeInWeb"]
+
+ref table allocation_metrics
+ref table allocation_plan
+ref table coverage_analysis
+ref table coverage_summary
+ref table depletion_forecast
+ref table dim_gmina
+ref table dim_powiat
+ref table dim_resource_type
+ref table dim_shelter
+ref table dim_supplier
+ref table dim_transport_unit
+ref table dim_voivodeship
+ref table dim_warehouse
+ref table fact_allocation
+ref table fact_consumption
+ref table fact_demand
+ref table fact_financial_request
+ref table fact_road_status
+ref table fact_shelter_occupancy
+ref table fact_stock
+ref table fact_transport_tracking

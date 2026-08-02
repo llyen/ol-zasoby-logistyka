@@ -1,0 +1,70 @@
+table dim_warehouse
+	sourceLineageTag: [dbo].[dim_warehouse]
+
+	column warehouse_id
+		dataType: string
+		sourceLineageTag: warehouse_id
+		summarizeBy: none
+		sourceColumn: warehouse_id
+
+	column warehouse_name
+		dataType: string
+		sourceLineageTag: warehouse_name
+		summarizeBy: none
+		sourceColumn: warehouse_name
+
+	column owner_type
+		dataType: string
+		sourceLineageTag: owner_type
+		summarizeBy: none
+		sourceColumn: owner_type
+
+	column voivodeship_code
+		dataType: string
+		sourceLineageTag: voivodeship_code
+		summarizeBy: none
+		sourceColumn: voivodeship_code
+
+	column lat
+		dataType: double
+		sourceLineageTag: lat
+		summarizeBy: sum
+		sourceColumn: lat
+
+	column lon
+		dataType: double
+		sourceLineageTag: lon
+		summarizeBy: sum
+		sourceColumn: lon
+
+	column area_m2
+		dataType: double
+		sourceLineageTag: area_m2
+		summarizeBy: sum
+		sourceColumn: area_m2
+
+	column has_ramp
+		dataType: int64
+		formatString: 0
+		sourceLineageTag: has_ramp
+		summarizeBy: sum
+		sourceColumn: has_ramp
+
+	column available_24_7
+		dataType: int64
+		formatString: 0
+		sourceLineageTag: available_24_7
+		summarizeBy: sum
+		sourceColumn: available_24_7
+
+	column ingested_at
+		dataType: dateTime
+		sourceLineageTag: ingested_at
+		summarizeBy: none
+		sourceColumn: ingested_at
+
+	partition dim_warehouse = entity
+		mode: directLake
+		source
+			entityName: dim_warehouse
+			expressionSource: 'DirectLake - OL_LOG_Lakehouse'

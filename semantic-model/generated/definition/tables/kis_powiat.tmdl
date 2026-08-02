@@ -1,0 +1,9 @@
+table kis_powiat
+	sourceLineageTag: [dbo].[kis_powiat]
+
+	partition kis_powiat = entity
+		mode: directLake
+		source
+			entityName: kis_powiat
+			schemaName: dbo
+			expressionSource: 'DirectLake - OL_COP24_Lakehouse'

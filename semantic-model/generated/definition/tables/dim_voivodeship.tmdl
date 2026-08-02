@@ -1,0 +1,38 @@
+table dim_voivodeship
+	sourceLineageTag: [dbo].[dim_voivodeship]
+
+	column voivodeship_code
+		dataType: string
+		sourceLineageTag: voivodeship_code
+		summarizeBy: none
+		sourceColumn: voivodeship_code
+
+	column voivodeship_name
+		dataType: string
+		sourceLineageTag: voivodeship_name
+		summarizeBy: none
+		sourceColumn: voivodeship_name
+
+	column lat
+		dataType: double
+		sourceLineageTag: lat
+		summarizeBy: sum
+		sourceColumn: lat
+
+	column lon
+		dataType: double
+		sourceLineageTag: lon
+		summarizeBy: sum
+		sourceColumn: lon
+
+	column ingested_at
+		dataType: dateTime
+		sourceLineageTag: ingested_at
+		summarizeBy: none
+		sourceColumn: ingested_at
+
+	partition dim_voivodeship = entity
+		mode: directLake
+		source
+			entityName: dim_voivodeship
+			expressionSource: 'DirectLake - OL_LOG_Lakehouse'

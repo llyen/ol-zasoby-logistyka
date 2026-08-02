@@ -53,7 +53,9 @@
     | extend cumulative_consumed=row_cumsum(daily_consumed, voivodeship_code != prev(voivodeship_code) or resource_type_id != prev(resource_type_id))
 }
 
-.create-or-alter materialized-view with (backfill=true, lookback=180d) DailyConsumption_mv on table Consumption {
+// Uwaga: parametr lookback jest wspierany tylko dla widokow deduplikujacych (arg_max/take_any).
+// Dla agregacji sum() Eventhouse odrzuca go bledem 400, dlatego zostaje sam backfill.
+.create-or-alter materialized-view with (backfill=true) DailyConsumption_mv on table Consumption {
     Consumption
     | summarize daily_consumed=sum(consumed_qty) by voivodeship_code, resource_type_id, day=startofday(timestamp)
 }

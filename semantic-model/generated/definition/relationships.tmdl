@@ -1,0 +1,80 @@
+relationship rel_dim_powiat_dim_voivodeship
+	fromColumn: dim_powiat.voivodeship_code
+	toColumn: dim_voivodeship.voivodeship_code
+
+relationship rel_dim_gmina_dim_powiat
+	fromColumn: dim_gmina.powiat_code
+	toColumn: dim_powiat.powiat_code
+
+relationship rel_dim_shelter_dim_gmina
+	fromColumn: dim_shelter.gmina_code
+	toColumn: dim_gmina.gmina_code
+
+relationship rel_dim_warehouse_dim_voivodeship
+	fromColumn: dim_warehouse.voivodeship_code
+	toColumn: dim_voivodeship.voivodeship_code
+
+relationship rel_dim_transport_unit_dim_warehouse
+	fromColumn: dim_transport_unit.base_warehouse_id
+	toColumn: dim_warehouse.warehouse_id
+
+relationship rel_dim_supplier_dim_voivodeship
+	fromColumn: dim_supplier.voivodeship_code
+	toColumn: dim_voivodeship.voivodeship_code
+
+relationship rel_fact_demand_dim_gmina
+	fromColumn: fact_demand.gmina_code
+	toColumn: dim_gmina.gmina_code
+
+relationship rel_fact_demand_dim_resource_type
+	fromColumn: fact_demand.resource_type_id
+	toColumn: dim_resource_type.resource_type_id
+
+relationship rel_fact_allocation_fact_demand
+	fromColumn: fact_allocation.demand_id
+	toColumn: fact_demand.demand_id
+
+relationship rel_fact_transport_tracking_fact_allocation
+	fromColumn: fact_transport_tracking.allocation_id
+	toColumn: fact_allocation.allocation_id
+
+relationship rel_fact_shelter_occupancy_dim_shelter
+	fromColumn: fact_shelter_occupancy.shelter_id
+	toColumn: dim_shelter.shelter_id
+
+relationship rel_fact_stock_dim_warehouse
+	fromColumn: fact_stock.warehouse_id
+	toColumn: dim_warehouse.warehouse_id
+
+relationship rel_fact_stock_dim_resource_type
+	fromColumn: fact_stock.resource_type_id
+	toColumn: dim_resource_type.resource_type_id
+
+relationship rel_fact_consumption_dim_resource_type
+	fromColumn: fact_consumption.resource_type_id
+	toColumn: dim_resource_type.resource_type_id
+
+relationship rel_fact_road_status_dim_voivodeship
+	fromColumn: fact_road_status.voivodeship_code
+	toColumn: dim_voivodeship.voivodeship_code
+
+relationship rel_fact_financial_request_dim_voivodeship
+	fromColumn: fact_financial_request.voivodeship_code
+	toColumn: dim_voivodeship.voivodeship_code
+
+relationship rel_coverage_analysis_dim_gmina
+	fromColumn: coverage_analysis.gmina_code
+	toColumn: dim_gmina.gmina_code
+
+relationship rel_depletion_forecast_dim_resource_type
+	fromColumn: depletion_forecast.resource_type_id
+	toColumn: dim_resource_type.resource_type_id
+
+relationship rel_allocation_plan_dim_resource_type
+	fromColumn: allocation_plan.resource_type_id
+	toColumn: dim_resource_type.resource_type_id
+
+relationship rel_allocation_plan_dim_gmina
+	fromColumn: allocation_plan.gmina_code
+	toColumn: dim_gmina.gmina_code
+

@@ -1,0 +1,9 @@
+table resource_deployment
+	sourceLineageTag: [dbo].[resource_deployment]
+
+	partition resource_deployment = entity
+		mode: directLake
+		source
+			entityName: resource_deployment
+			schemaName: dbo
+			expressionSource: 'DirectLake - OL_COP24_Lakehouse'

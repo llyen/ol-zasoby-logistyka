@@ -1,0 +1,69 @@
+table fact_transport_tracking
+	sourceLineageTag: [dbo].[fact_transport_tracking]
+
+	column allocation_id
+		dataType: string
+		sourceLineageTag: allocation_id
+		summarizeBy: none
+		sourceColumn: allocation_id
+
+	column delay_min
+		dataType: int64
+		formatString: 0
+		sourceLineageTag: delay_min
+		summarizeBy: sum
+		sourceColumn: delay_min
+
+	column eta
+		dataType: dateTime
+		sourceLineageTag: eta
+		summarizeBy: none
+		sourceColumn: eta
+
+	column lat
+		dataType: double
+		sourceLineageTag: lat
+		summarizeBy: sum
+		sourceColumn: lat
+
+	column lon
+		dataType: double
+		sourceLineageTag: lon
+		summarizeBy: sum
+		sourceColumn: lon
+
+	column speed_kmh
+		dataType: double
+		sourceLineageTag: speed_kmh
+		summarizeBy: sum
+		sourceColumn: speed_kmh
+
+	column status
+		dataType: string
+		sourceLineageTag: status
+		summarizeBy: none
+		sourceColumn: status
+
+	column timestamp
+		dataType: dateTime
+		sourceLineageTag: timestamp
+		summarizeBy: none
+		sourceColumn: timestamp
+
+	column transport_id
+		dataType: string
+		sourceLineageTag: transport_id
+		summarizeBy: none
+		sourceColumn: transport_id
+
+	column ingested_at
+		dataType: dateTime
+		sourceLineageTag: ingested_at
+		summarizeBy: none
+		sourceColumn: ingested_at
+
+	partition fact_transport_tracking = entity
+		mode: directLake
+		source
+			entityName: fact_transport_tracking
+			expressionSource: 'DirectLake - OL_LOG_Lakehouse'

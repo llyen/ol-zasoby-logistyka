@@ -1,0 +1,145 @@
+table coverage_summary
+	sourceLineageTag: [dbo].[coverage_summary]
+
+	column affected_gminas
+		dataType: int64
+		formatString: 0
+		sourceLineageTag: affected_gminas
+		summarizeBy: sum
+		sourceColumn: affected_gminas
+
+	column avg_access_time_h
+		dataType: double
+		sourceLineageTag: avg_access_time_h
+		summarizeBy: sum
+		sourceColumn: avg_access_time_h
+
+	column p90_access_time_h
+		dataType: double
+		sourceLineageTag: p90_access_time_h
+		summarizeBy: sum
+		sourceColumn: p90_access_time_h
+
+	column max_access_time_h
+		dataType: double
+		sourceLineageTag: max_access_time_h
+		summarizeBy: sum
+		sourceColumn: max_access_time_h
+
+	column coverage_gaps_gt_6h
+		dataType: int64
+		formatString: 0
+		sourceLineageTag: coverage_gaps_gt_6h
+		summarizeBy: sum
+		sourceColumn: coverage_gaps_gt_6h
+
+	measure Zapotrzebowania = COUNTROWS(fact_demand)
+		formatString: #,0
+
+	measure 'Zapotrzebowania Priorytet 1' = CALCULATE(COUNTROWS(fact_demand), fact_demand[priority] = 1)
+		formatString: #,0
+
+	measure 'Zapotrzebowana Ilosc' = SUM(fact_demand[quantity])
+		formatString: #,0
+
+	measure 'Przydzielona Ilosc' = SUM(fact_allocation[allocated_qty])
+		formatString: #,0
+
+	measure 'Pokrycie Zapotrzebowan %' = DIVIDE(SUM(fact_allocation[allocated_qty]), SUM(fact_demand[quantity]))
+		formatString: 0.0%
+
+	measure 'Gminy z Zapotrzebowaniem' = DISTINCTCOUNT(fact_demand[gmina_code])
+		formatString: #,0
+
+	measure Transporty = DISTINCTCOUNT(fact_transport_tracking[transport_id])
+		formatString: #,0
+
+	measure 'Transporty Opoznione' = CALCULATE(DISTINCTCOUNT(fact_transport_tracking[transport_id]), fact_transport_tracking[delay_min] > 30)
+		formatString: #,0
+
+	measure 'Maksymalne Opoznienie Min' = MAX(fact_transport_tracking[delay_min])
+		formatString: #,0
+
+	measure 'Srednia Predkosc kmh' = AVERAGE(fact_transport_tracking[speed_kmh])
+		formatString: 0.0
+
+	measure 'Osoby w Punktach Przyjecia' = MAXX(VALUES(fact_shelter_occupancy[timestamp]), CALCULATE(SUM(fact_shelter_occupancy[occupied])))
+		formatString: #,0
+
+	measure 'Pojemnosc Punktow' = SUMX(VALUES(fact_shelter_occupancy[shelter_id]), CALCULATE(MAX(fact_shelter_occupancy[capacity])))
+		formatString: #,0
+
+	measure 'Oblozenie Punktow %' = DIVIDE(MAXX(VALUES(fact_shelter_occupancy[timestamp]), CALCULATE(SUM(fact_shelter_occupancy[occupied]))), SUMX(VALUES(fact_shelter_occupancy[shelter_id]), CALCULATE(MAX(fact_shelter_occupancy[capacity]))))
+		formatString: 0.0%
+
+	measure 'Punkty Powyzej 90%' = COUNTROWS(FILTER(VALUES(fact_shelter_occupancy[shelter_id]), CALCULATE(DIVIDE(MAX(fact_shelter_occupancy[occupied]), MAX(fact_shelter_occupancy[capacity]))) > 0.9))
+		formatString: #,0
+
+	measure 'Wymagajacy Opieki Medycznej' = MAXX(VALUES(fact_shelter_occupancy[timestamp]), CALCULATE(SUM(fact_shelter_occupancy[medical_care_required])))
+		formatString: #,0
+
+	measure 'Zapas Dostepny' = SUM(fact_stock[available_qty])
+		formatString: #,0
+
+	measure 'Zapas Zarezerwowany' = SUM(fact_stock[reserved_qty])
+		formatString: #,0
+
+	measure 'Zapas w Drodze' = SUM(fact_stock[in_transit_qty])
+		formatString: #,0
+
+	measure 'Zuzycie Narastajaco' = SUM(fact_consumption[consumed_qty])
+		formatString: #,0
+
+	measure 'Krytyczne Braki Zapasu' = CALCULATE(COUNTROWS(depletion_forecast), depletion_forecast[days_of_stock] < 2)
+		formatString: #,0
+
+	measure 'Minimalne Dni Zapasu' = MIN(depletion_forecast[days_of_stock])
+		formatString: 0.0
+
+	measure 'Odcinki Nieprzejezdne' = CALCULATE(DISTINCTCOUNT(fact_road_status[road_segment_id]), fact_road_status[status] = "nieprzejezdna")
+		formatString: #,0
+
+	measure 'Odcinki z Utrudnieniami' = CALCULATE(DISTINCTCOUNT(fact_road_status[road_segment_id]), fact_road_status[status] = "utrudnienia")
+		formatString: #,0
+
+	measure 'Sredni Czas Dojazdu h' = AVERAGE(coverage_analysis[access_time_h])
+		formatString: 0.00
+
+	measure 'P90 Czas Dojazdu h' = AVERAGE(coverage_summary[p90_access_time_h])
+		formatString: 0.00
+
+	measure 'Luki Pokrycia Ponad 6h' = SUM(coverage_summary[coverage_gaps_gt_6h])
+		formatString: #,0
+
+	measure 'Sredni Czas FIFO h' = CALCULATE(AVERAGE(allocation_metrics[avg_delivery_time_h]), allocation_metrics[method] = "fifo")
+		formatString: 0.00
+
+	measure 'Sredni Czas Optymalizacja h' = CALCULATE(AVERAGE(allocation_metrics[avg_delivery_time_h]), allocation_metrics[method] = "optimized")
+		formatString: 0.00
+
+	measure 'Czas Zaoszczedzony h' = AVERAGE(allocation_metrics[time_saved_h])
+		formatString: 0.00
+
+	measure 'Priorytet 1 Obsluzony %' = CALCULATE(AVERAGE(allocation_metrics[priority1_served_pct]), allocation_metrics[method] = "optimized") / 100
+		formatString: 0.0%
+
+	measure 'Koszt Operacji PLN' = SUMX(FILTER(allocation_plan, allocation_plan[method] = "optimized"), allocation_plan[allocated_qty] * RELATED(dim_resource_type[weight_kg]) * 0.45)
+		formatString: #,0
+
+	measure 'SPO-2 Wnioskowane PLN' = SUM(fact_financial_request[amount_pln])
+		formatString: #,0
+
+	measure 'SPO-2 Powyzej Limitu' = CALCULATE(COUNTROWS(fact_financial_request), fact_financial_request[amount_pln] > 5000000)
+		formatString: #,0
+
+	measure Magazyny = DISTINCTCOUNT(dim_warehouse[warehouse_id])
+		formatString: #,0
+
+	measure 'Ludnosc Objeta Zapotrzebowaniem' = CALCULATE(SUM(dim_gmina[population]), FILTER(VALUES(dim_gmina[gmina_code]), CALCULATE(COUNTROWS(fact_demand)) > 0))
+		formatString: #,0
+
+	partition coverage_summary = entity
+		mode: directLake
+		source
+			entityName: coverage_summary
+			expressionSource: 'DirectLake - OL_LOG_Lakehouse'

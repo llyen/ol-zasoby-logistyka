@@ -1,0 +1,57 @@
+table dim_gmina
+	sourceLineageTag: [dbo].[dim_gmina]
+
+	column gmina_code
+		dataType: string
+		sourceLineageTag: gmina_code
+		summarizeBy: none
+		sourceColumn: gmina_code
+
+	column gmina_name
+		dataType: string
+		sourceLineageTag: gmina_name
+		summarizeBy: none
+		sourceColumn: gmina_name
+
+	column powiat_code
+		dataType: string
+		sourceLineageTag: powiat_code
+		summarizeBy: none
+		sourceColumn: powiat_code
+
+	column voivodeship_code
+		dataType: string
+		sourceLineageTag: voivodeship_code
+		summarizeBy: none
+		sourceColumn: voivodeship_code
+
+	column population
+		dataType: int64
+		formatString: 0
+		sourceLineageTag: population
+		summarizeBy: sum
+		sourceColumn: population
+
+	column lat
+		dataType: double
+		sourceLineageTag: lat
+		summarizeBy: sum
+		sourceColumn: lat
+
+	column lon
+		dataType: double
+		sourceLineageTag: lon
+		summarizeBy: sum
+		sourceColumn: lon
+
+	column ingested_at
+		dataType: dateTime
+		sourceLineageTag: ingested_at
+		summarizeBy: none
+		sourceColumn: ingested_at
+
+	partition dim_gmina = entity
+		mode: directLake
+		source
+			entityName: dim_gmina
+			expressionSource: 'DirectLake - OL_LOG_Lakehouse'

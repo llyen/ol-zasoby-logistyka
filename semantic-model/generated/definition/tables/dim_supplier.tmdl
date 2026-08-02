@@ -1,0 +1,51 @@
+table dim_supplier
+	sourceLineageTag: [dbo].[dim_supplier]
+
+	column supplier_id
+		dataType: string
+		sourceLineageTag: supplier_id
+		summarizeBy: none
+		sourceColumn: supplier_id
+
+	column supplier_name
+		dataType: string
+		sourceLineageTag: supplier_name
+		summarizeBy: none
+		sourceColumn: supplier_name
+
+	column category
+		dataType: string
+		sourceLineageTag: category
+		summarizeBy: none
+		sourceColumn: category
+
+	column voivodeship_code
+		dataType: string
+		sourceLineageTag: voivodeship_code
+		summarizeBy: none
+		sourceColumn: voivodeship_code
+
+	column lead_time_h
+		dataType: double
+		sourceLineageTag: lead_time_h
+		summarizeBy: sum
+		sourceColumn: lead_time_h
+
+	column contract_limit
+		dataType: int64
+		formatString: 0
+		sourceLineageTag: contract_limit
+		summarizeBy: sum
+		sourceColumn: contract_limit
+
+	column ingested_at
+		dataType: dateTime
+		sourceLineageTag: ingested_at
+		summarizeBy: none
+		sourceColumn: ingested_at
+
+	partition dim_supplier = entity
+		mode: directLake
+		source
+			entityName: dim_supplier
+			expressionSource: 'DirectLake - OL_LOG_Lakehouse'
