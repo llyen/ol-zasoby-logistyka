@@ -1,0 +1,153 @@
+# 🚀 Stan wdrożenia scenariusza logistycznego na Microsoft Fabric
+
+Dokument opisuje **rzeczywisty, zweryfikowany** stan środowiska demonstracyjnego oraz kolejność
+kroków, którymi zostało ono zbudowane. Służy do odtworzenia wdrożenia i do rozliczenia prac.
+
+## 1. Środowisko
+
+| Element | Wartość |
+|---|---|
+| Workspace | `OL-ZK-Demo-Zasoby` |
+| Workspace ID | `aebf1df2-3be8-4f89-9d8d-647ae519d50b` |
+| Pojemność | `fcdemo` (F8) |
+| Cluster URI Eventhouse | `https://trd-1mgsz6pz0kcbxjcnjw.z9.kusto.fabric.microsoft.com` |
+
+> Pojemność `fcdemo` sama przechodzi w stan `Paused` po okresie bezczynności. Przed każdym
+> dłuższym wdrożeniem uruchom `deploy\ensure_capacity.ps1`, inaczej wywołania Fabric API
+> kończą się błędem `CapacityNotActive`.
+
+## 2. Utworzone elementy
+
+| Element | Typ | ID |
+|---|---|---|
+| `OL_LOG_Lakehouse` | Lakehouse | `dad1feb6-3eba-431d-8e9f-b00aba44344d` |
+| `OL_LOG_Eventhouse` | Eventhouse | `895d7b28-e5a4-4bbf-a61d-78d6e542c369` |
+| `OL_LOG_Eventhouse` | KQL Database | `c9c80774-af15-4c59-b856-d9d659506820` |
+| `OL_LOG_SemanticModel` | Semantic model (Direct Lake) | `82d61aa6-1ea3-42f5-a9e9-4c5ae4508944` |
+| `OL_LOG_Dashboard` | Real-Time Dashboard | `8b865c96-4fa9-49b0-8313-a71c175fc23c` |
+| `OL_LOG_Activator` | Activator (Reflex) | `b07883fa-b389-48da-8f3a-d3b0267c0de1` |
+| `01_load_dimensions` … `05_schema_dump` | Notebook (6) | zob. workspace |
+
+## 3. Kolejność wdrożenia
+
+```powershell
+# 0. Upewnienie się, że pojemność działa
+.\deploy\ensure_capacity.ps1
+
+# 1. Workspace, Lakehouse, Eventhouse
+.\deploy\deploy_fabric.ps1 -Step items
+
+# 2. Tabele KQL, mapowania ingestii, widoki zmaterializowane, funkcje curated
+.\deploy\deploy_fabric.ps1 -Step kql
+
+# 3. Wysyłka danych do OneLake (CSV -> Files/datasets, JSONL -> Files/streams)
+.\deploy\deploy_fabric.ps1 -Step upload
+
+# 4. Ingestia strumieni, wymiarów, stanów magazynowych i wniosków SPO-2
+.\deploy\deploy_fabric.ps1 -Step ingest
+.\deploy\deploy_fabric.ps1 -Step verify
+
+# 5. Notatniki Spark: wymiary, strumienie, pokrycie, optymalizacja, prognoza
+.\deploy\import_notebooks.ps1
+.\deploy\run_notebooks.ps1
+
+# 6. Model semantyczny Direct Lake (21 tabel, 20 relacji, 35 miar)
+.\deploy\create_semantic_model.ps1
+
+# 7. Real-Time Dashboard (5 stron, 20 kafelków)
+.\deploy\create_dashboard.ps1
+
+# 8. Reguły alertowe jako funkcje KQL + element Activator
+.\deploy\create_activator.ps1
+
+# 9. Symulacja czasu rzeczywistego (tryb ciągły, w tle)
+.\scenario\run_scenario.ps1 -Preset ciagly -Background
+```
+
+## 4. Zweryfikowane liczności w Eventhouse
+
+Stan po pełnym załadowaniu danych źródłowych (`-Step verify`):
+
+| Tabela | Wiersze |
+|---|---|
+| `TransportTracking` | 16 901 |
+| `Consumption` | 14 300 |
+| `ShelterOccupancy` | 4 400 |
+| `dim_gmina` | 2 477 |
+| `StockSnapshot` | 1 200 |
+| `Demand` | 960 |
+| `Allocation` | 520 |
+| `dim_shelter` | 400 |
+| `RoadStatus` | 260 |
+| `dim_powiat` | 380 |
+| `FinancialRequest` | 90 |
+| `dim_warehouse` | 60 |
+| `dim_voivodeship` | 16 |
+
+Zakres czasu danych źródłowych: `2026-09-15` … `2026-09-26`.
+
+> W trybie ciągłego odtwarzania tabele strumieniowe zawierają wyłącznie okno prezentacji
+> (tło + faza live przesunięte na bieżący zegar), więc ich liczności są mniejsze.
+> Pełne liczności wracają po `deploy_fabric.ps1 -Step ingest`.
+
+## 5. Tabele Delta w Lakehouse (21)
+
+Wymiary (notatnik `01`): `dim_voivodeship`, `dim_powiat`, `dim_gmina`, `dim_warehouse`,
+`dim_resource_type`, `dim_shelter`, `dim_transport_unit`, `dim_supplier`.
+
+Strumienie i fakty (notatnik `01b`): `fact_demand`, `fact_allocation`, `fact_transport_tracking`,
+`fact_shelter_occupancy`, `fact_consumption`, `fact_road_status`, `fact_stock`,
+`fact_financial_request`.
+
+Wyniki modeli (notatniki `02`–`04`): `coverage_analysis`, `coverage_summary`, `allocation_plan`,
+`allocation_metrics`, `depletion_forecast`.
+
+## 6. Ścieżka real-time
+
+```
+scenario/replay.py  ──►  streaming ingestion Eventhouse  ──►  Real-Time Dashboard (okno 15 min)
+```
+
+Silnik odtwarzania kompresuje dobę scenariusza do 24 minut zegara (`--speed 60`) i **przypina
+oś czasu do chwili uruchomienia**, dlatego dashboard pokazuje świeże dane niezależnie od pory
+demonstracji. Tło (15–19.09) ładowane jest wsadowo z OneLake i przesuwane jednym poleceniem
+`.set-or-replace`, a okno live (19–20.09, szczyt operacji transportowych) idzie strumieniowo.
+
+| Wariant | Tempo | Okno live | Czas cyklu |
+|---|---|---|---|
+| `demo` | 60x | 24 h | ~24 min |
+| `szybki` | 300x | 24 h | ~5 min (smoke-test) |
+| `kulminacja` | 30x | 12 h od 20.09 | ~24 min |
+| `wolny` | 15x | 12 h | ~48 min |
+| `ciagly` | 60x | 24 h, zapętlone | bez końca |
+
+```powershell
+.\scenario\run_scenario.ps1 -Preset ciagly -Background   # start w tle
+.\scenario\run_scenario.ps1 -Stop                        # zatrzymanie
+.\scenario\run_scenario.ps1 -ResetOnly                   # wyczyszczenie tabel
+```
+
+Postęp: `scenario\_ciagly.log`. Okno dashboardu (15 min) jest krótsze niż cykl (24 min),
+dzięki czemu w kadrze widać przyrost, a nie całą scenę naraz.
+
+## 7. Napotkane problemy i rozwiązania
+
+| Problem | Rozwiązanie |
+|---|---|
+| `lookback` w widoku zmaterializowanym `DailyConsumption_mv` → `BadRequest` bez czytelnego komunikatu | `lookback` działa wyłącznie dla widoków deduplikujących (`arg_max`, `take_any`), nie dla agregacji `sum()` — usunięty |
+| Direct Lake: `We cannot access the source Delta table` po `updateDefinition` | Lakehouse utworzony przez REST API **nie ma schematów** — w definicji modelu należy użyć ścieżki OneLake bez `schemaName`, nie SQL endpointu z `dbo` |
+| `TokenExpired` w środku łańcucha notatników | `run_notebooks.ps1` odświeża token co 15 minut; `az account get-access-token` potrafi oddać token z własnego cache z krótkim czasem ważności |
+| `CapacityNotActive` w trakcie wdrożenia | Pojemność sama się wstrzymuje — `deploy\ensure_capacity.ps1` wznawia ją przed pracą |
+| Odtwarzanie przerywane przez `HTTP 520 Internal service error` | 520 jest przejściowy — pętla ponawiania obejmuje teraz wszystkie kody 5xx, nie tylko 500/502/503/504 |
+| `TableSetOrReplace` w stanie `Throttled` przy przesuwaniu osi czasu | F8 z aktywnymi widokami zmaterializowanymi dławi operację; przesunięcie ponawiane jest do 4 razy z rosnącym odstępem |
+| Reguła „transport opóźniony” bez trafień | Status `delayed` nigdy nie jest ostatnim stanem transportu (po dostawie wraca `delivered`) — alert liczony jest z odczytów w oknie, a nie ze stanu końcowego |
+| Reguła „priorytet 1 bez obsługi > 2 h” bez trafień | Scena biegnie w tempie 60x, więc 2 h akcji to 2 minuty zegara — próg demonstracyjny przeliczony na oś demo |
+
+## 8. Kroki pozostające do wykonania
+
+1. **Raport Power BI** — `report\REPORT_SPEC.md`; model semantyczny jest gotowy i zweryfikowany
+   (35 miar zwraca wartości zgodne z `datasets\README.md`).
+2. **Data Agent** — instrukcje i przykładowe pytania w `ai\DATA_AGENT.md`.
+3. **Fabric App / Rayfin** — specyfikacja `fabric-app\APP_SPEC.md`, prompt `fabric-app\RAYFIN_PROMPT.md`.
+4. **Powiadomienia Activatora** — reguły KQL działają; kanały powiadomień dokonfigurować w UI
+   wg `activator\RULES.md`.

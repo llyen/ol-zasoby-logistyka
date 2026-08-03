@@ -1,74 +1,185 @@
-// 03_dashboard_queries.kql — Real-Time Dashboard tiles for OL Logistics
+// 03_dashboard_queries.kql - kafelki Real-Time Dashboard dla scenariusza logistyki zasobow.
+//
+// Format naglowka jest kontraktem dla deploy\create_dashboard.ps1: numer, tytul i strona.
+// Zmienne _startTime i _endTime pochodza z parametru zakresu czasu dashboardu; kafelek
+// bez nich pokazuje stan biezacy niezaleznie od ustawionego okna.
+//
+// Zasada wydajnosci: najpierw filtr czasu, potem agregacja, na koncu join z wymiarem.
+// Wymiary sa male (najwieksza dim_gmina to 2477 wierszy), wiec join po agregacji jest tani.
 
-// Tile 1: KPI transport delays by status
-CurrentTransportPositions()
-| summarize transports=count(), delayed=countif(delay_min > 30), avg_delay=round(avg(delay_min),1) by status
+// 01. Kafelek: „Pozycje transportow w terenie” | Strona: Obraz operacji
+TransportTracking
+| where timestamp between (_startTime .. _endTime)
+| summarize arg_max(timestamp, lat, lon, speed_kmh, status, delay_min, allocation_id) by transport_id
+| project transport_id, lat, lon, Opoznienie = delay_min, Predkosc = speed_kmh, status, allocation_id
 
-// Tile 2: Map of current transport positions
-CurrentTransportPositions()
-| project transport_id, allocation_id, lat, lon, speed_kmh, eta, status, delay_min
+// 02. Kafelek: „Puls operacji logistycznej” | Strona: Obraz operacji
+let okno = TransportTracking | where timestamp between (_startTime .. _endTime);
+let transporty = okno | summarize arg_max(timestamp, status, delay_min) by transport_id;
+let zapotrzebowanie = Demand | where timestamp between (_startTime .. _endTime);
+let punkty = ShelterOccupancy | where timestamp between (_startTime .. _endTime)
+    | summarize arg_max(timestamp, occupied, capacity) by shelter_id;
+union
+  (transporty | summarize Wskaznik = 'Transporty w ruchu', Wartosc = countif(status == 'in_transit')),
+  (transporty | summarize Wskaznik = 'Transporty opoznione', Wartosc = countif(delay_min > 30)),
+  (zapotrzebowanie | summarize Wskaznik = 'Nowe zapotrzebowania', Wartosc = count()),
+  (zapotrzebowanie | summarize Wskaznik = 'W tym priorytet 1', Wartosc = countif(priority == 1)),
+  (punkty | summarize Wskaznik = 'Osoby w punktach', Wartosc = sum(occupied)),
+  (punkty | summarize Wskaznik = 'Punkty powyzej 90%', Wartosc = countif(capacity > 0 and todouble(occupied) / capacity > 0.9))
 
-// Tile 3: Shelters above 90% capacity
-CurrentShelterOccupancy()
-| where occupancy_pct > 0.9
-| project shelter_id, occupied, capacity, occupancy_pct=round(occupancy_pct*100,1), medical_care_required
-| order by occupancy_pct desc
-
-// Tile 4: Shelter occupancy trend by hour
-ShelterOccupancy
-| summarize occupied=sum(occupied), capacity=sum(capacity) by bin(timestamp, 1h)
-| extend occupancy_pct=round(100.0*occupied/capacity,1)
-
-// Tile 5: Priority 1 SLA queue
+// 03. Kafelek: „Naplyw zapotrzebowan wedlug priorytetu” | Strona: Obraz operacji
 Demand
+| where timestamp between (_startTime .. _endTime)
+| summarize Priorytet1 = countif(priority == 1), Priorytet2 = countif(priority == 2), Priorytet3 = countif(priority >= 3)
+    by Czas = bin(timestamp, 1m)
+| order by Czas asc
+
+// 04. Kafelek: „Zapotrzebowanie wedlug wojewodztw” | Strona: Obraz operacji
+Demand
+| where timestamp between (_startTime .. _endTime)
+| summarize Sztuk = sum(quantity), Zgloszenia = count() by voivodeship_code
+| join kind=inner (dim_voivodeship | project voivodeship_code, voivodeship_name) on voivodeship_code
+| project Wojewodztwo = voivodeship_name, Sztuk, Zgloszenia
+| order by Sztuk desc
+| take 16
+
+// 05. Kafelek: „Otwarte zapotrzebowania priorytetu 1” | Strona: Obraz operacji
+Demand
+| where timestamp between (_startTime .. _endTime)
 | where priority == 1
-| join kind=leftouter Allocation on demand_id
-| summarize open=countif(isempty(allocation_id)), allocated=countif(isnotempty(allocation_id)), delivered=countif(status == "delivered") by bin(timestamp, 6h)
+| join kind=leftouter (Allocation | project demand_id, allocation_id, status) on demand_id
+| where isempty(allocation_id) or status != 'delivered'
+| join kind=leftouter (dim_gmina | project gmina_code, gmina_name) on gmina_code
+| join kind=leftouter (dim_resource_type | project resource_type_id, resource_name) on resource_type_id
+| project Zgloszono = timestamp, Gmina = gmina_name, Zasob = resource_name, Sztuk = quantity,
+          Stan = iff(isempty(allocation_id), 'bez przydzialu', status), Uzasadnienie = justification
+| order by Zgloszono desc
+| take 40
 
-// Tile 6: New demand volume by voivodeship
-Demand
-| summarize demand_count=count(), total_qty=sum(quantity), p1=countif(priority == 1) by voivodeship_code, bin(timestamp, 1d)
-| order by timestamp desc, p1 desc
+// 06. Kafelek: „Opoznienia transportow w czasie” | Strona: Transport
+TransportTracking
+| where timestamp between (_startTime .. _endTime)
+| summarize SrednieOpoznienieMin = round(avg(delay_min), 1), MaksymalneOpoznienieMin = max(delay_min)
+    by Czas = bin(timestamp, 1m)
+| order by Czas asc
 
-// Tile 7: Road status map
-RoadStatus
-| summarize arg_max(timestamp, *) by road_segment_id
-| project road_segment_id, road_name, status, reason, lat, lon, voivodeship_code
+// 07. Kafelek: „Najbardziej opoznione transporty” | Strona: Transport
+TransportTracking
+| where timestamp between (_startTime .. _endTime)
+| summarize arg_max(timestamp, delay_min, status, eta, allocation_id) by transport_id
+| where delay_min > 0
+| top 12 by delay_min desc
+| project Transport = transport_id, Opoznienie = delay_min, status, eta
 
-// Tile 8: Consumption trend by resource
-Consumption
-| summarize consumed=sum(consumed_qty) by resource_type_id, bin(timestamp, 1d)
-| order by timestamp asc
+// 08. Kafelek: „Struktura statusow transportu” | Strona: Transport
+TransportTracking
+| where timestamp between (_startTime .. _endTime)
+| summarize arg_max(timestamp, status) by transport_id
+| summarize Transporty = count() by Status = status
 
-// Tile 9: Allocation status funnel
-Allocation
-| summarize allocations=count(), qty=sum(allocated_qty) by status, decision_level
-| order by allocations desc
+// 09. Kafelek: „Predkosc floty i postoje” | Strona: Transport
+TransportTracking
+| where timestamp between (_startTime .. _endTime)
+| summarize SredniaPredkosc = round(avg(speed_kmh), 1), Postoje = countif(speed_kmh < 5)
+    by Czas = bin(timestamp, 1m)
+| order by Czas asc
 
-// Tile 10: Financial SPO-2 pipeline
-FinancialRequest
-| summarize requests=count(), amount_pln=sum(amount_pln) by status
-| order by amount_pln desc
+// 10. Kafelek: „Puls punktow przyjecia” | Strona: Punkty przyjecia
+let stan = ShelterOccupancy
+    | where timestamp between (_startTime .. _endTime)
+    | summarize arg_max(timestamp, occupied, capacity, medical_care_required) by shelter_id;
+union
+  (stan | summarize Wskaznik = 'Osoby w punktach', Wartosc = sum(occupied)),
+  (stan | summarize Wskaznik = 'Miejsca wolne', Wartosc = sum(capacity) - sum(occupied)),
+  (stan | summarize Wskaznik = 'Wymagajacy opieki medycznej', Wartosc = sum(medical_care_required)),
+  (stan | summarize Wskaznik = 'Punkty powyzej 90%', Wartosc = countif(capacity > 0 and todouble(occupied) / capacity > 0.9))
 
-// Tile 11: Top delayed transports with ETA
-CurrentTransportPositions()
-| top 20 by delay_min desc
-| project transport_id, status, delay_min, eta, lat, lon
-
-// Tile 12: Open demand without allocation
-Demand
-| join kind=leftouter Allocation on demand_id
-| where isempty(allocation_id)
-| summarize open=count(), qty=sum(quantity), p1=countif(priority == 1) by voivodeship_code, resource_type_id
-| order by p1 desc, qty desc
-
-// Tile 13: Priority heatmap by resource
-Demand
-| summarize p1=countif(priority == 1), all_demands=count(), qty=sum(quantity) by resource_type_id, bin(timestamp, 1d)
-| extend p1_share=round(100.0*p1/all_demands,1)
-
-// Tile 14: Medical care pressure in shelters
+// 11. Kafelek: „Oblozenie punktow w czasie” | Strona: Punkty przyjecia
 ShelterOccupancy
-| summarize arg_max(timestamp, *) by shelter_id
-| summarize medical=sum(medical_care_required), occupied=sum(occupied), capacity=sum(capacity)
-| extend medical_share=round(100.0*medical/occupied,1)
+| where timestamp between (_startTime .. _endTime)
+| summarize Osoby = sum(occupied), Pojemnosc = sum(capacity) by Czas = bin(timestamp, 1m)
+| extend OblozenieProc = round(100.0 * Osoby / Pojemnosc, 1)
+| order by Czas asc
+
+// 12. Kafelek: „Punkty przyjecia na mapie” | Strona: Punkty przyjecia
+ShelterOccupancy
+| where timestamp between (_startTime .. _endTime)
+| summarize arg_max(timestamp, occupied, capacity, medical_care_required) by shelter_id
+| join kind=inner (dim_shelter | project shelter_id, shelter_name, lat, lon) on shelter_id
+| project shelter_id, shelter_name, lat, lon, Osoby = occupied,
+          OblozenieProc = round(100.0 * occupied / capacity, 1), Medyczne = medical_care_required
+
+// 13. Kafelek: „Punkty na granicy pojemnosci” | Strona: Punkty przyjecia
+ShelterOccupancy
+| where timestamp between (_startTime .. _endTime)
+| summarize arg_max(timestamp, occupied, capacity, medical_care_required) by shelter_id
+| where capacity > 0 and todouble(occupied) / capacity > 0.85
+| join kind=inner (dim_shelter | project shelter_id, shelter_name, gmina_code) on shelter_id
+| join kind=leftouter (dim_gmina | project gmina_code, gmina_name) on gmina_code
+| project Punkt = shelter_name, Gmina = gmina_name, Osoby = occupied, Pojemnosc = capacity,
+          OblozenieProc = round(100.0 * occupied / capacity, 1), Medyczne = medical_care_required
+| order by OblozenieProc desc
+| take 40
+
+// 14. Kafelek: „Zuzycie zasobow w czasie” | Strona: Zapasy i zuzycie
+Consumption
+| where timestamp between (_startTime .. _endTime)
+| summarize Zuzycie = sum(consumed_qty) by Czas = bin(timestamp, 1m)
+| order by Czas asc
+
+// 15. Kafelek: „Zuzycie wedlug kategorii zasobu” | Strona: Zapasy i zuzycie
+Consumption
+| where timestamp between (_startTime .. _endTime)
+| summarize Zuzycie = sum(consumed_qty) by resource_type_id
+| join kind=inner (dim_resource_type | project resource_type_id, category) on resource_type_id
+| summarize Zuzycie = sum(Zuzycie) by Kategoria = category
+| order by Zuzycie desc
+
+// 16. Kafelek: „Zapasy magazynowe wedlug kategorii” | Strona: Zapasy i zuzycie
+StockSnapshot
+| summarize arg_max(snapshot_date, available_qty, reserved_qty, in_transit_qty) by warehouse_id, resource_type_id
+| join kind=inner (dim_resource_type | project resource_type_id, category) on resource_type_id
+| summarize Dostepne = sum(available_qty), Zarezerwowane = sum(reserved_qty), WDrodze = sum(in_transit_qty)
+    by Kategoria = category
+| order by Dostepne desc
+
+// 17. Kafelek: „Zasoby zagrozone wyczerpaniem” | Strona: Zapasy i zuzycie
+let zuzycie_okno = Consumption
+    | where timestamp between (_startTime .. _endTime)
+    | summarize Zuzycie = sum(consumed_qty) by resource_type_id;
+StockSnapshot
+| summarize arg_max(snapshot_date, available_qty) by warehouse_id, resource_type_id
+| summarize Dostepne = sum(available_qty) by resource_type_id
+| join kind=inner zuzycie_okno on resource_type_id
+| join kind=inner (dim_resource_type | project resource_type_id, resource_name, unit) on resource_type_id
+| extend DniZapasu = round(todouble(Dostepne) / iff(Zuzycie > 0, todouble(Zuzycie), 1.0), 1)
+| project Zasob = resource_name, Jednostka = unit, Dostepne, ZuzycieWOknie = Zuzycie, DniZapasu
+| order by DniZapasu asc
+| take 20
+
+// 18. Kafelek: „Odcinki drog z utrudnieniami” | Strona: Drogi i dostepnosc
+RoadStatus
+| where timestamp <= _endTime
+| summarize arg_max(timestamp, status, reason, lat, lon, road_name, voivodeship_code) by road_segment_id
+| where status != 'przejezdna'
+| extend Waga = iff(status == 'nieprzejezdna', 3, 1)
+| project road_segment_id, road_name, lat, lon, status, reason, Waga
+
+// 19. Kafelek: „Przejezdnosc sieci drogowej” | Strona: Drogi i dostepnosc
+RoadStatus
+| where timestamp <= _endTime
+| summarize arg_max(timestamp, status, voivodeship_code) by road_segment_id
+| summarize Odcinki = count() by voivodeship_code, Status = status
+| join kind=inner (dim_voivodeship | project voivodeship_code, voivodeship_name) on voivodeship_code
+| project Wojewodztwo = voivodeship_name, Status, Odcinki
+| order by Odcinki desc
+
+// 20. Kafelek: „Odcinki nieprzejezdne” | Strona: Drogi i dostepnosc
+RoadStatus
+| where timestamp <= _endTime
+| summarize arg_max(timestamp, status, reason, road_name, voivodeship_code) by road_segment_id
+| where status == 'nieprzejezdna'
+| join kind=leftouter (dim_voivodeship | project voivodeship_code, voivodeship_name) on voivodeship_code
+| project Odcinek = road_name, Wojewodztwo = voivodeship_name, Przyczyna = reason, Od = timestamp
+| order by Od desc
+| take 30

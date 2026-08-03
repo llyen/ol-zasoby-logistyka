@@ -2,3 +2,6 @@
 __pycache__/
 *.pyc
 .venv/
+scenario/_ciagly.log
+scenario/_ciagly.err.log
+scenario/_ciagly.pid

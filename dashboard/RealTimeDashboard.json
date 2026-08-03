@@ -1,0 +1,1011 @@
+{
+  "$schema": "https://pbiadx.powerbi.com/static/d/schema/60/dashboard.json",
+  "id": "e40cd761-35a4-5283-7493-dda5f60ae8b9",
+  "eTag": "",
+  "schema_version": "60",
+  "title": "OL_LOG_Dashboard",
+  "autoRefresh": {
+    "enabled": true,
+    "defaultInterval": "10s",
+    "minInterval": "10s"
+  },
+  "tiles": [
+    {
+      "id": "bd9dc26d-b11a-9320-27af-092ef4987267",
+      "title": "Pozycje transportow w terenie",
+      "visualType": "map",
+      "pageId": "0f211491-f360-ef5a-4487-abcf458c42ee",
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 12,
+        "height": 8
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "c61181c1-21b0-c840-180b-7fa19c051f52"
+      },
+      "visualOptions": {
+        "hideLegend": false,
+        "legendLocation": "bottom",
+        "map__bubbleFormat": "bubble",
+        "map__longitudeColumn": "lon",
+        "map__minBubbleSizeColumn": "Opoznienie",
+        "map__latitudeColumn": "lat"
+      }
+    },
+    {
+      "id": "42310ee6-00df-7f1f-4b52-3b5f7c45ff44",
+      "title": "Puls operacji logistycznej",
+      "visualType": "multistat",
+      "pageId": "0f211491-f360-ef5a-4487-abcf458c42ee",
+      "layout": {
+        "x": 12,
+        "y": 0,
+        "width": 6,
+        "height": 3
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "3f26eee1-9f8f-8482-45c4-a8fd3c38c288"
+      },
+      "visualOptions": {
+        "multiStat__textSize": "auto",
+        "colorRulesDisabled": true,
+        "multiStat__valueColumn": "Wartosc",
+        "colorRules": [],
+        "colorStyle": "light",
+        "multiStat__displayOrientation": "horizontal",
+        "multiStat__labelColumn": "Wskaznik",
+        "multiStat__slot": {
+          "width": 4,
+          "height": 1
+        }
+      }
+    },
+    {
+      "id": "2e871ece-1af3-6a74-370a-47b9ae98fee8",
+      "title": "Naplyw zapotrzebowan wedlug priorytetu",
+      "visualType": "line",
+      "pageId": "0f211491-f360-ef5a-4487-abcf458c42ee",
+      "layout": {
+        "x": 0,
+        "y": 8,
+        "width": 12,
+        "height": 8
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "b8610491-66bd-7c86-29a4-1b64d93092af"
+      },
+      "visualOptions": {
+        "xColumnTitle": "Czas",
+        "xColumn": "Czas",
+        "multipleYAxes": {
+          "base": {
+            "horizontalLines": [],
+            "label": "",
+            "yAxisScale": "linear",
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "id": "-1",
+            "columns": []
+          },
+          "showMultiplePanels": false,
+          "additional": []
+        },
+        "drillthrough": [],
+        "crossFilterDisabled": false,
+        "yColumns": [
+          "Priorytet1",
+          "Priorytet2",
+          "Priorytet3"
+        ],
+        "hideLegend": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "verticalLine": "",
+        "xAxisScale": "linear",
+        "seriesColumns": null,
+        "legendLocation": "bottom"
+      }
+    },
+    {
+      "id": "1f763cf1-d968-5c70-c603-4b264aae77c1",
+      "title": "Zapotrzebowanie wedlug wojewodztw",
+      "visualType": "column",
+      "pageId": "0f211491-f360-ef5a-4487-abcf458c42ee",
+      "layout": {
+        "x": 12,
+        "y": 8,
+        "width": 12,
+        "height": 8
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "50adfe15-bc9d-51b2-4da1-49e5b6bcf2fb"
+      },
+      "visualOptions": {
+        "xColumnTitle": "Wojewodztwo",
+        "xColumn": "Wojewodztwo",
+        "multipleYAxes": {
+          "base": {
+            "horizontalLines": [],
+            "label": "",
+            "yAxisScale": "linear",
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "id": "-1",
+            "columns": []
+          },
+          "showMultiplePanels": false,
+          "additional": []
+        },
+        "drillthrough": [],
+        "crossFilterDisabled": false,
+        "yColumns": [
+          "Sztuk"
+        ],
+        "hideLegend": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "verticalLine": "",
+        "xAxisScale": "linear",
+        "seriesColumns": null,
+        "legendLocation": "bottom"
+      }
+    },
+    {
+      "id": "352637f0-1ad6-37b2-a59c-9a0334fdaa0f",
+      "title": "Otwarte zapotrzebowania priorytetu 1",
+      "visualType": "table",
+      "pageId": "0f211491-f360-ef5a-4487-abcf458c42ee",
+      "layout": {
+        "x": 0,
+        "y": 16,
+        "width": 12,
+        "height": 7
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "f7a04452-31c1-de0e-a390-c28a01575c68"
+      },
+      "visualOptions": {
+        "crossFilter": [],
+        "table__renderLinks": [],
+        "colorRulesDisabled": true,
+        "drillthrough": [],
+        "colorRules": [],
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "colorStyle": "light",
+        "table__enableRenderLinks": true
+      }
+    },
+    {
+      "id": "f6d59a2b-8a3e-723f-e360-455f2a91e639",
+      "title": "Opoznienia transportow w czasie",
+      "visualType": "line",
+      "pageId": "c1784056-6c6b-dc17-a226-f8673721430e",
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 12,
+        "height": 8
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "478c5813-b83b-8cde-84ee-35fc83514bc8"
+      },
+      "visualOptions": {
+        "xColumnTitle": "Czas",
+        "xColumn": "Czas",
+        "multipleYAxes": {
+          "base": {
+            "horizontalLines": [],
+            "label": "",
+            "yAxisScale": "linear",
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "id": "-1",
+            "columns": []
+          },
+          "showMultiplePanels": false,
+          "additional": []
+        },
+        "drillthrough": [],
+        "crossFilterDisabled": false,
+        "yColumns": [
+          "SrednieOpoznienieMin",
+          "MaksymalneOpoznienieMin"
+        ],
+        "hideLegend": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "verticalLine": "",
+        "xAxisScale": "linear",
+        "seriesColumns": null,
+        "legendLocation": "bottom"
+      }
+    },
+    {
+      "id": "897af01d-f6c9-6fa5-6dbb-5ef1eff0618b",
+      "title": "Najbardziej opoznione transporty",
+      "visualType": "table",
+      "pageId": "c1784056-6c6b-dc17-a226-f8673721430e",
+      "layout": {
+        "x": 12,
+        "y": 0,
+        "width": 12,
+        "height": 7
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "52af2f52-843c-87b3-e180-d934e3516611"
+      },
+      "visualOptions": {
+        "crossFilter": [],
+        "table__renderLinks": [],
+        "colorRulesDisabled": true,
+        "drillthrough": [],
+        "colorRules": [],
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "colorStyle": "light",
+        "table__enableRenderLinks": true
+      }
+    },
+    {
+      "id": "de217ca5-58df-abd9-96e2-96ceb50fb74d",
+      "title": "Struktura statusow transportu",
+      "visualType": "pie",
+      "pageId": "c1784056-6c6b-dc17-a226-f8673721430e",
+      "layout": {
+        "x": 0,
+        "y": 8,
+        "width": 6,
+        "height": 8
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "a986b366-e37e-adda-05b4-7e25027be0ca"
+      },
+      "visualOptions": {
+        "pie__orderBy": "size",
+        "legendLocation": "right",
+        "pie__label": [
+          "name",
+          "percentage"
+        ],
+        "hideLegend": false,
+        "xColumn": "Status",
+        "pie__kind": "donut",
+        "yColumns": [
+          "Transporty"
+        ]
+      }
+    },
+    {
+      "id": "d0504c77-21b5-bcf6-ed07-b69b1f0534a7",
+      "title": "Predkosc floty i postoje",
+      "visualType": "line",
+      "pageId": "c1784056-6c6b-dc17-a226-f8673721430e",
+      "layout": {
+        "x": 12,
+        "y": 8,
+        "width": 12,
+        "height": 8
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "34839f2a-9064-ee45-b703-c291c3fbb092"
+      },
+      "visualOptions": {
+        "xColumnTitle": "Czas",
+        "xColumn": "Czas",
+        "multipleYAxes": {
+          "base": {
+            "horizontalLines": [],
+            "label": "",
+            "yAxisScale": "linear",
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "id": "-1",
+            "columns": []
+          },
+          "showMultiplePanels": false,
+          "additional": []
+        },
+        "drillthrough": [],
+        "crossFilterDisabled": false,
+        "yColumns": [
+          "SredniaPredkosc",
+          "Postoje"
+        ],
+        "hideLegend": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "verticalLine": "",
+        "xAxisScale": "linear",
+        "seriesColumns": null,
+        "legendLocation": "bottom"
+      }
+    },
+    {
+      "id": "5c6adad9-9b00-94e9-8e8c-82567ab8ef71",
+      "title": "Puls punktow przyjecia",
+      "visualType": "multistat",
+      "pageId": "05a48a69-93af-7ab1-7bec-e157a4bc0d8d",
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 6,
+        "height": 3
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "1e5e9d05-c1f7-059e-4201-929064b837c7"
+      },
+      "visualOptions": {
+        "multiStat__textSize": "auto",
+        "colorRulesDisabled": true,
+        "multiStat__valueColumn": "Wartosc",
+        "colorRules": [],
+        "colorStyle": "light",
+        "multiStat__displayOrientation": "horizontal",
+        "multiStat__labelColumn": "Wskaznik",
+        "multiStat__slot": {
+          "width": 4,
+          "height": 1
+        }
+      }
+    },
+    {
+      "id": "137f8728-ca9d-befc-baaf-3cf9ef462f00",
+      "title": "Oblozenie punktow w czasie",
+      "visualType": "line",
+      "pageId": "05a48a69-93af-7ab1-7bec-e157a4bc0d8d",
+      "layout": {
+        "x": 12,
+        "y": 0,
+        "width": 12,
+        "height": 8
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "59ce4ede-07dc-438d-52f2-75f6f279d587"
+      },
+      "visualOptions": {
+        "xColumnTitle": "Czas",
+        "xColumn": "Czas",
+        "multipleYAxes": {
+          "base": {
+            "horizontalLines": [],
+            "label": "",
+            "yAxisScale": "linear",
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "id": "-1",
+            "columns": []
+          },
+          "showMultiplePanels": false,
+          "additional": []
+        },
+        "drillthrough": [],
+        "crossFilterDisabled": false,
+        "yColumns": [
+          "Osoby",
+          "Pojemnosc"
+        ],
+        "hideLegend": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "verticalLine": "",
+        "xAxisScale": "linear",
+        "seriesColumns": null,
+        "legendLocation": "bottom"
+      }
+    },
+    {
+      "id": "e92b83cf-8ae7-df73-0da8-a76a1e92be9c",
+      "title": "Punkty przyjecia na mapie",
+      "visualType": "map",
+      "pageId": "05a48a69-93af-7ab1-7bec-e157a4bc0d8d",
+      "layout": {
+        "x": 0,
+        "y": 8,
+        "width": 12,
+        "height": 8
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "acb3c4fe-12cf-9db2-1d36-a2e7e78ddada"
+      },
+      "visualOptions": {
+        "hideLegend": false,
+        "legendLocation": "bottom",
+        "map__bubbleFormat": "bubble",
+        "map__longitudeColumn": "lon",
+        "map__minBubbleSizeColumn": "Osoby",
+        "map__latitudeColumn": "lat"
+      }
+    },
+    {
+      "id": "a4d17ef6-cf0c-aa7b-dc96-6a0cda70b479",
+      "title": "Punkty na granicy pojemnosci",
+      "visualType": "table",
+      "pageId": "05a48a69-93af-7ab1-7bec-e157a4bc0d8d",
+      "layout": {
+        "x": 12,
+        "y": 8,
+        "width": 12,
+        "height": 7
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "939255ff-2e4d-fc3d-dffc-c18cce19c38a"
+      },
+      "visualOptions": {
+        "crossFilter": [],
+        "table__renderLinks": [],
+        "colorRulesDisabled": true,
+        "drillthrough": [],
+        "colorRules": [],
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "colorStyle": "light",
+        "table__enableRenderLinks": true
+      }
+    },
+    {
+      "id": "8362a005-bd1c-4b1a-5e09-f6efc972b53b",
+      "title": "Zuzycie zasobow w czasie",
+      "visualType": "line",
+      "pageId": "1b89f944-2291-60ff-d5b2-7439f1767e23",
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 12,
+        "height": 8
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "b23e8866-4f3b-9e6e-cdbc-c76b60654852"
+      },
+      "visualOptions": {
+        "xColumnTitle": "Czas",
+        "xColumn": "Czas",
+        "multipleYAxes": {
+          "base": {
+            "horizontalLines": [],
+            "label": "",
+            "yAxisScale": "linear",
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "id": "-1",
+            "columns": []
+          },
+          "showMultiplePanels": false,
+          "additional": []
+        },
+        "drillthrough": [],
+        "crossFilterDisabled": false,
+        "yColumns": [
+          "Zuzycie"
+        ],
+        "hideLegend": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "verticalLine": "",
+        "xAxisScale": "linear",
+        "seriesColumns": null,
+        "legendLocation": "bottom"
+      }
+    },
+    {
+      "id": "96db1224-3ce5-f1d6-d894-78ea73a9dac6",
+      "title": "Zuzycie wedlug kategorii zasobu",
+      "visualType": "column",
+      "pageId": "1b89f944-2291-60ff-d5b2-7439f1767e23",
+      "layout": {
+        "x": 12,
+        "y": 0,
+        "width": 12,
+        "height": 8
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "84afbd9f-e12e-6033-e09e-0c37307d0e13"
+      },
+      "visualOptions": {
+        "xColumnTitle": "Kategoria",
+        "xColumn": "Kategoria",
+        "multipleYAxes": {
+          "base": {
+            "horizontalLines": [],
+            "label": "",
+            "yAxisScale": "linear",
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "id": "-1",
+            "columns": []
+          },
+          "showMultiplePanels": false,
+          "additional": []
+        },
+        "drillthrough": [],
+        "crossFilterDisabled": false,
+        "yColumns": [
+          "Zuzycie"
+        ],
+        "hideLegend": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "verticalLine": "",
+        "xAxisScale": "linear",
+        "seriesColumns": null,
+        "legendLocation": "bottom"
+      }
+    },
+    {
+      "id": "f2b33964-ef0d-b45c-709b-808014e1ce2f",
+      "title": "Zapasy magazynowe wedlug kategorii",
+      "visualType": "column",
+      "pageId": "1b89f944-2291-60ff-d5b2-7439f1767e23",
+      "layout": {
+        "x": 0,
+        "y": 8,
+        "width": 12,
+        "height": 8
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "765bf762-1708-badd-a282-650644f17482"
+      },
+      "visualOptions": {
+        "xColumnTitle": "Kategoria",
+        "xColumn": "Kategoria",
+        "multipleYAxes": {
+          "base": {
+            "horizontalLines": [],
+            "label": "",
+            "yAxisScale": "linear",
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "id": "-1",
+            "columns": []
+          },
+          "showMultiplePanels": false,
+          "additional": []
+        },
+        "drillthrough": [],
+        "crossFilterDisabled": false,
+        "yColumns": [
+          "Dostepne",
+          "Zarezerwowane",
+          "WDrodze"
+        ],
+        "hideLegend": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "verticalLine": "",
+        "xAxisScale": "linear",
+        "seriesColumns": null,
+        "legendLocation": "bottom"
+      }
+    },
+    {
+      "id": "fac08c35-0066-5b55-9608-0aff1bf4cd29",
+      "title": "Zasoby zagrozone wyczerpaniem",
+      "visualType": "table",
+      "pageId": "1b89f944-2291-60ff-d5b2-7439f1767e23",
+      "layout": {
+        "x": 12,
+        "y": 8,
+        "width": 12,
+        "height": 7
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "b8ecd113-10a0-475e-51de-2e5eb3c74004"
+      },
+      "visualOptions": {
+        "crossFilter": [],
+        "table__renderLinks": [],
+        "colorRulesDisabled": true,
+        "drillthrough": [],
+        "colorRules": [],
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "colorStyle": "light",
+        "table__enableRenderLinks": true
+      }
+    },
+    {
+      "id": "1120e1db-422d-6380-9509-613bd286aad6",
+      "title": "Odcinki drog z utrudnieniami",
+      "visualType": "map",
+      "pageId": "eed92aeb-b8c0-f994-bb28-9d409d4491ae",
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 12,
+        "height": 8
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "047c2b32-f53a-5c40-f706-175c5f9a0d17"
+      },
+      "visualOptions": {
+        "hideLegend": false,
+        "legendLocation": "bottom",
+        "map__bubbleFormat": "bubble",
+        "map__longitudeColumn": "lon",
+        "map__minBubbleSizeColumn": "Waga",
+        "map__latitudeColumn": "lat"
+      }
+    },
+    {
+      "id": "a59740d1-515d-ae73-1134-64b8c9aed2a5",
+      "title": "Przejezdnosc sieci drogowej",
+      "visualType": "column",
+      "pageId": "eed92aeb-b8c0-f994-bb28-9d409d4491ae",
+      "layout": {
+        "x": 12,
+        "y": 0,
+        "width": 12,
+        "height": 8
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "28841b8c-3d80-e5b1-872a-c9fcbb22c354"
+      },
+      "visualOptions": {
+        "xColumnTitle": "Wojewodztwo",
+        "xColumn": "Wojewodztwo",
+        "multipleYAxes": {
+          "base": {
+            "horizontalLines": [],
+            "label": "",
+            "yAxisScale": "linear",
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "id": "-1",
+            "columns": []
+          },
+          "showMultiplePanels": false,
+          "additional": []
+        },
+        "drillthrough": [],
+        "crossFilterDisabled": false,
+        "yColumns": [
+          "Odcinki"
+        ],
+        "hideLegend": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "verticalLine": "",
+        "xAxisScale": "linear",
+        "seriesColumns": [
+          "Status"
+        ],
+        "legendLocation": "bottom"
+      }
+    },
+    {
+      "id": "c32c34f0-d765-a577-dc18-4c9fb003eab8",
+      "title": "Odcinki nieprzejezdne",
+      "visualType": "table",
+      "pageId": "eed92aeb-b8c0-f994-bb28-9d409d4491ae",
+      "layout": {
+        "x": 0,
+        "y": 8,
+        "width": 12,
+        "height": 7
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "fd6f2c81-a593-e8cd-a933-cc5d0b43f625"
+      },
+      "visualOptions": {
+        "crossFilter": [],
+        "table__renderLinks": [],
+        "colorRulesDisabled": true,
+        "drillthrough": [],
+        "colorRules": [],
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "colorStyle": "light",
+        "table__enableRenderLinks": true
+      }
+    }
+  ],
+  "baseQueries": [],
+  "parameters": [
+    {
+      "kind": "duration",
+      "id": "2165857b-5967-638f-1068-d26c11eb108f",
+      "displayName": "Zakres czasu",
+      "description": "Ruchome okno ostatnich 15 minut zegara. Scenariusz biegnie w tempie 60x, wiec okno obejmuje ok. 15 godzin akcji i przesuwa sie razem z zegarem.",
+      "beginVariableName": "_startTime",
+      "endVariableName": "_endTime",
+      "defaultValue": {
+        "kind": "dynamic",
+        "count": 15,
+        "unit": "minutes"
+      },
+      "showOnPages": {
+        "kind": "all"
+      }
+    }
+  ],
+  "dataSources": [
+    {
+      "kind": "kusto-trident",
+      "scopeId": "kusto-trident",
+      "clusterUri": "https://trd-1mgsz6pz0kcbxjcnjw.z9.kusto.fabric.microsoft.com",
+      "database": "c9c80774-af15-4c59-b856-d9d659506820",
+      "name": "OL_LOG_Eventhouse",
+      "id": "8f5bfc44-808a-5d2f-316f-493b1e3961d3",
+      "workspace": "aebf1df2-3be8-4f89-9d8d-647ae519d50b"
+    }
+  ],
+  "pages": [
+    {
+      "name": "Obraz operacji",
+      "id": "0f211491-f360-ef5a-4487-abcf458c42ee"
+    },
+    {
+      "name": "Transport",
+      "id": "c1784056-6c6b-dc17-a226-f8673721430e"
+    },
+    {
+      "name": "Punkty przyjecia",
+      "id": "05a48a69-93af-7ab1-7bec-e157a4bc0d8d"
+    },
+    {
+      "name": "Zapasy i zuzycie",
+      "id": "1b89f944-2291-60ff-d5b2-7439f1767e23"
+    },
+    {
+      "name": "Drogi i dostepnosc",
+      "id": "eed92aeb-b8c0-f994-bb28-9d409d4491ae"
+    }
+  ],
+  "queries": [
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "8f5bfc44-808a-5d2f-316f-493b1e3961d3"
+      },
+      "text": "TransportTracking\n| where timestamp between (_startTime .. _endTime)\n| summarize arg_max(timestamp, lat, lon, speed_kmh, status, delay_min, allocation_id) by transport_id\n| project transport_id, lat, lon, Opoznienie = delay_min, Predkosc = speed_kmh, status, allocation_id",
+      "id": "c61181c1-21b0-c840-180b-7fa19c051f52",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "8f5bfc44-808a-5d2f-316f-493b1e3961d3"
+      },
+      "text": "let okno = TransportTracking | where timestamp between (_startTime .. _endTime);\nlet transporty = okno | summarize arg_max(timestamp, status, delay_min) by transport_id;\nlet zapotrzebowanie = Demand | where timestamp between (_startTime .. _endTime);\nlet punkty = ShelterOccupancy | where timestamp between (_startTime .. _endTime)\n    | summarize arg_max(timestamp, occupied, capacity) by shelter_id;\nunion\n  (transporty | summarize Wskaznik = 'Transporty w ruchu', Wartosc = countif(status == 'in_transit')),\n  (transporty | summarize Wskaznik = 'Transporty opoznione', Wartosc = countif(delay_min > 30)),\n  (zapotrzebowanie | summarize Wskaznik = 'Nowe zapotrzebowania', Wartosc = count()),\n  (zapotrzebowanie | summarize Wskaznik = 'W tym priorytet 1', Wartosc = countif(priority == 1)),\n  (punkty | summarize Wskaznik = 'Osoby w punktach', Wartosc = sum(occupied)),\n  (punkty | summarize Wskaznik = 'Punkty powyzej 90%', Wartosc = countif(capacity > 0 and todouble(occupied) / capacity > 0.9))",
+      "id": "3f26eee1-9f8f-8482-45c4-a8fd3c38c288",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "8f5bfc44-808a-5d2f-316f-493b1e3961d3"
+      },
+      "text": "Demand\n| where timestamp between (_startTime .. _endTime)\n| summarize Priorytet1 = countif(priority == 1), Priorytet2 = countif(priority == 2), Priorytet3 = countif(priority >= 3)\n    by Czas = bin(timestamp, 1m)\n| order by Czas asc",
+      "id": "b8610491-66bd-7c86-29a4-1b64d93092af",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "8f5bfc44-808a-5d2f-316f-493b1e3961d3"
+      },
+      "text": "Demand\n| where timestamp between (_startTime .. _endTime)\n| summarize Sztuk = sum(quantity), Zgloszenia = count() by voivodeship_code\n| join kind=inner (dim_voivodeship | project voivodeship_code, voivodeship_name) on voivodeship_code\n| project Wojewodztwo = voivodeship_name, Sztuk, Zgloszenia\n| order by Sztuk desc\n| take 16",
+      "id": "50adfe15-bc9d-51b2-4da1-49e5b6bcf2fb",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "8f5bfc44-808a-5d2f-316f-493b1e3961d3"
+      },
+      "text": "Demand\n| where timestamp between (_startTime .. _endTime)\n| where priority == 1\n| join kind=leftouter (Allocation | project demand_id, allocation_id, status) on demand_id\n| where isempty(allocation_id) or status != 'delivered'\n| join kind=leftouter (dim_gmina | project gmina_code, gmina_name) on gmina_code\n| join kind=leftouter (dim_resource_type | project resource_type_id, resource_name) on resource_type_id\n| project Zgloszono = timestamp, Gmina = gmina_name, Zasob = resource_name, Sztuk = quantity,\n          Stan = iff(isempty(allocation_id), 'bez przydzialu', status), Uzasadnienie = justification\n| order by Zgloszono desc\n| take 40",
+      "id": "f7a04452-31c1-de0e-a390-c28a01575c68",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "8f5bfc44-808a-5d2f-316f-493b1e3961d3"
+      },
+      "text": "TransportTracking\n| where timestamp between (_startTime .. _endTime)\n| summarize SrednieOpoznienieMin = round(avg(delay_min), 1), MaksymalneOpoznienieMin = max(delay_min)\n    by Czas = bin(timestamp, 1m)\n| order by Czas asc",
+      "id": "478c5813-b83b-8cde-84ee-35fc83514bc8",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "8f5bfc44-808a-5d2f-316f-493b1e3961d3"
+      },
+      "text": "TransportTracking\n| where timestamp between (_startTime .. _endTime)\n| summarize arg_max(timestamp, delay_min, status, eta, allocation_id) by transport_id\n| where delay_min > 0\n| top 12 by delay_min desc\n| project Transport = transport_id, Opoznienie = delay_min, status, eta",
+      "id": "52af2f52-843c-87b3-e180-d934e3516611",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "8f5bfc44-808a-5d2f-316f-493b1e3961d3"
+      },
+      "text": "TransportTracking\n| where timestamp between (_startTime .. _endTime)\n| summarize arg_max(timestamp, status) by transport_id\n| summarize Transporty = count() by Status = status",
+      "id": "a986b366-e37e-adda-05b4-7e25027be0ca",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "8f5bfc44-808a-5d2f-316f-493b1e3961d3"
+      },
+      "text": "TransportTracking\n| where timestamp between (_startTime .. _endTime)\n| summarize SredniaPredkosc = round(avg(speed_kmh), 1), Postoje = countif(speed_kmh < 5)\n    by Czas = bin(timestamp, 1m)\n| order by Czas asc",
+      "id": "34839f2a-9064-ee45-b703-c291c3fbb092",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "8f5bfc44-808a-5d2f-316f-493b1e3961d3"
+      },
+      "text": "let stan = ShelterOccupancy\n    | where timestamp between (_startTime .. _endTime)\n    | summarize arg_max(timestamp, occupied, capacity, medical_care_required) by shelter_id;\nunion\n  (stan | summarize Wskaznik = 'Osoby w punktach', Wartosc = sum(occupied)),\n  (stan | summarize Wskaznik = 'Miejsca wolne', Wartosc = sum(capacity) - sum(occupied)),\n  (stan | summarize Wskaznik = 'Wymagajacy opieki medycznej', Wartosc = sum(medical_care_required)),\n  (stan | summarize Wskaznik = 'Punkty powyzej 90%', Wartosc = countif(capacity > 0 and todouble(occupied) / capacity > 0.9))",
+      "id": "1e5e9d05-c1f7-059e-4201-929064b837c7",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "8f5bfc44-808a-5d2f-316f-493b1e3961d3"
+      },
+      "text": "ShelterOccupancy\n| where timestamp between (_startTime .. _endTime)\n| summarize Osoby = sum(occupied), Pojemnosc = sum(capacity) by Czas = bin(timestamp, 1m)\n| extend OblozenieProc = round(100.0 * Osoby / Pojemnosc, 1)\n| order by Czas asc",
+      "id": "59ce4ede-07dc-438d-52f2-75f6f279d587",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "8f5bfc44-808a-5d2f-316f-493b1e3961d3"
+      },
+      "text": "ShelterOccupancy\n| where timestamp between (_startTime .. _endTime)\n| summarize arg_max(timestamp, occupied, capacity, medical_care_required) by shelter_id\n| join kind=inner (dim_shelter | project shelter_id, shelter_name, lat, lon) on shelter_id\n| project shelter_id, shelter_name, lat, lon, Osoby = occupied,\n          OblozenieProc = round(100.0 * occupied / capacity, 1), Medyczne = medical_care_required",
+      "id": "acb3c4fe-12cf-9db2-1d36-a2e7e78ddada",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "8f5bfc44-808a-5d2f-316f-493b1e3961d3"
+      },
+      "text": "ShelterOccupancy\n| where timestamp between (_startTime .. _endTime)\n| summarize arg_max(timestamp, occupied, capacity, medical_care_required) by shelter_id\n| where capacity > 0 and todouble(occupied) / capacity > 0.85\n| join kind=inner (dim_shelter | project shelter_id, shelter_name, gmina_code) on shelter_id\n| join kind=leftouter (dim_gmina | project gmina_code, gmina_name) on gmina_code\n| project Punkt = shelter_name, Gmina = gmina_name, Osoby = occupied, Pojemnosc = capacity,\n          OblozenieProc = round(100.0 * occupied / capacity, 1), Medyczne = medical_care_required\n| order by OblozenieProc desc\n| take 40",
+      "id": "939255ff-2e4d-fc3d-dffc-c18cce19c38a",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "8f5bfc44-808a-5d2f-316f-493b1e3961d3"
+      },
+      "text": "Consumption\n| where timestamp between (_startTime .. _endTime)\n| summarize Zuzycie = sum(consumed_qty) by Czas = bin(timestamp, 1m)\n| order by Czas asc",
+      "id": "b23e8866-4f3b-9e6e-cdbc-c76b60654852",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "8f5bfc44-808a-5d2f-316f-493b1e3961d3"
+      },
+      "text": "Consumption\n| where timestamp between (_startTime .. _endTime)\n| summarize Zuzycie = sum(consumed_qty) by resource_type_id\n| join kind=inner (dim_resource_type | project resource_type_id, category) on resource_type_id\n| summarize Zuzycie = sum(Zuzycie) by Kategoria = category\n| order by Zuzycie desc",
+      "id": "84afbd9f-e12e-6033-e09e-0c37307d0e13",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "8f5bfc44-808a-5d2f-316f-493b1e3961d3"
+      },
+      "text": "StockSnapshot\n| summarize arg_max(snapshot_date, available_qty, reserved_qty, in_transit_qty) by warehouse_id, resource_type_id\n| join kind=inner (dim_resource_type | project resource_type_id, category) on resource_type_id\n| summarize Dostepne = sum(available_qty), Zarezerwowane = sum(reserved_qty), WDrodze = sum(in_transit_qty)\n    by Kategoria = category\n| order by Dostepne desc",
+      "id": "765bf762-1708-badd-a282-650644f17482",
+      "usedVariables": []
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "8f5bfc44-808a-5d2f-316f-493b1e3961d3"
+      },
+      "text": "let zuzycie_okno = Consumption\n    | where timestamp between (_startTime .. _endTime)\n    | summarize Zuzycie = sum(consumed_qty) by resource_type_id;\nStockSnapshot\n| summarize arg_max(snapshot_date, available_qty) by warehouse_id, resource_type_id\n| summarize Dostepne = sum(available_qty) by resource_type_id\n| join kind=inner zuzycie_okno on resource_type_id\n| join kind=inner (dim_resource_type | project resource_type_id, resource_name, unit) on resource_type_id\n| extend DniZapasu = round(todouble(Dostepne) / iff(Zuzycie > 0, todouble(Zuzycie), 1.0), 1)\n| project Zasob = resource_name, Jednostka = unit, Dostepne, ZuzycieWOknie = Zuzycie, DniZapasu\n| order by DniZapasu asc\n| take 20",
+      "id": "b8ecd113-10a0-475e-51de-2e5eb3c74004",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "8f5bfc44-808a-5d2f-316f-493b1e3961d3"
+      },
+      "text": "RoadStatus\n| where timestamp <= _endTime\n| summarize arg_max(timestamp, status, reason, lat, lon, road_name, voivodeship_code) by road_segment_id\n| where status != 'przejezdna'\n| extend Waga = iff(status == 'nieprzejezdna', 3, 1)\n| project road_segment_id, road_name, lat, lon, status, reason, Waga",
+      "id": "047c2b32-f53a-5c40-f706-175c5f9a0d17",
+      "usedVariables": [
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "8f5bfc44-808a-5d2f-316f-493b1e3961d3"
+      },
+      "text": "RoadStatus\n| where timestamp <= _endTime\n| summarize arg_max(timestamp, status, voivodeship_code) by road_segment_id\n| summarize Odcinki = count() by voivodeship_code, Status = status\n| join kind=inner (dim_voivodeship | project voivodeship_code, voivodeship_name) on voivodeship_code\n| project Wojewodztwo = voivodeship_name, Status, Odcinki\n| order by Odcinki desc",
+      "id": "28841b8c-3d80-e5b1-872a-c9fcbb22c354",
+      "usedVariables": [
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "8f5bfc44-808a-5d2f-316f-493b1e3961d3"
+      },
+      "text": "RoadStatus\n| where timestamp <= _endTime\n| summarize arg_max(timestamp, status, reason, road_name, voivodeship_code) by road_segment_id\n| where status == 'nieprzejezdna'\n| join kind=leftouter (dim_voivodeship | project voivodeship_code, voivodeship_name) on voivodeship_code\n| project Odcinek = road_name, Wojewodztwo = voivodeship_name, Przyczyna = reason, Od = timestamp\n| order by Od desc\n| take 30",
+      "id": "fd6f2c81-a593-e8cd-a933-cc5d0b43f625",
+      "usedVariables": [
+        "_endTime"
+      ]
+    }
+  ]
+}

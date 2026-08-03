@@ -239,6 +239,19 @@ if ($Step -in 'all', 'ingest') {
         Write-Ok 'zaladowano StockSnapshot'
     }
     catch { Write-Warn "StockSnapshot :: $($_.Exception.Message)" }
+
+    # Wnioski SPO-2 sa zrodlem reguly Activatora o przekroczeniu limitu finansowego,
+    # dlatego musza byc w Eventhouse, a nie tylko w Lakehouse.
+    Write-Step 'Wnioski finansowe SPO-2 (FinancialRequest)'
+    $finUrl = "https://onelake.dfs.fabric.microsoft.com/$($ws.id)/$($lakehouse.id)/Files/datasets/fact_financial_request.csv"
+    $finSchema = 'financial_request_id:string, timestamp:datetime, applicant:string, voivodeship_code:string, amount_pln:long, purpose:string, status:string, approval_path:string'
+    try {
+        Invoke-KustoMgmt $clusterUri $kqlDbName ".create-merge table FinancialRequest ($finSchema)" | Out-Null
+        Invoke-KustoMgmt $clusterUri $kqlDbName '.clear table FinancialRequest data' | Out-Null
+        Invoke-KustoMgmt $clusterUri $kqlDbName ".ingest into table FinancialRequest ('$finUrl;impersonate') with (format='csv', ignoreFirstRecord=true)" | Out-Null
+        Write-Ok 'zaladowano FinancialRequest'
+    }
+    catch { Write-Warn "FinancialRequest :: $($_.Exception.Message)" }
 }
 
 if ($Step -in 'all', 'verify') {

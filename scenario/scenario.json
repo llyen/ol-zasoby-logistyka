@@ -1,0 +1,22 @@
+{
+  "cluster": "https://trd-1mgsz6pz0kcbxjcnjw.z9.kusto.fabric.microsoft.com",
+  "database": "OL_LOG_Eventhouse",
+  "workspaceId": "aebf1df2-3be8-4f89-9d8d-647ae519d50b",
+  "lakehouseId": "dad1feb6-3eba-431d-8e9f-b00aba44344d",
+  "onelake": "https://onelake.dfs.fabric.microsoft.com/aebf1df2-3be8-4f89-9d8d-647ae519d50b/dad1feb6-3eba-431d-8e9f-b00aba44344d/Files/streams",
+  "liveStart": "2026-09-19T06:00:00+02:00",
+  "streams": [
+    "TransportTracking",
+    "Consumption",
+    "ShelterOccupancy",
+    "Demand",
+    "RoadStatus"
+  ],
+  "files": {
+    "TransportTracking": "fact_transport_tracking",
+    "Consumption": "fact_consumption",
+    "ShelterOccupancy": "fact_shelter_occupancy",
+    "Demand": "fact_demand",
+    "RoadStatus": "fact_road_status"
+  }
+}
