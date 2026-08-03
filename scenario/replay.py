@@ -10,6 +10,7 @@ Uzycie:
 from __future__ import annotations
 
 import argparse
+import http.client
 import json
 import queue
 import subprocess
@@ -123,6 +124,11 @@ class KustoClient:
                 # juz nawiazane. Bez tej galezi ciezkie operacje (.clear na kilkuset
                 # tysiacach wierszy) przerywaly caly przebieg zamiast zostac ponowione.
                 last = f"timeout odczytu: {exc}"
+            except (OSError, http.client.HTTPException) as exc:
+                # Przy gestym oknie live (dziesiatki tysiecy zdarzen) usluga potrafi
+                # zerwac polaczenie (WinError 10054 / RemoteDisconnected). To stan
+                # przejsciowy, wiec ponawiamy zamiast konczyc odtwarzanie.
+                last = f"polaczenie przerwane: {exc}"
             time.sleep(min(2 ** attempt, 15))
         raise SystemExit(f"Nie udalo sie wykonac zadania po 5 probach: {last}")
 
