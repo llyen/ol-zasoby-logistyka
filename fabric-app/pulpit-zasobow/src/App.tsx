@@ -15,7 +15,7 @@ function AuthGuard({ children, requireAuth }: { children: React.ReactNode; requi
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-400">
+      <div className="flex min-h-screen items-center justify-center bg-slate-100 text-slate-600">
         Uwierzytelnianie…
       </div>
     );
@@ -31,14 +31,14 @@ function SceneGate({ children }: { children: React.ReactNode }) {
   const { loading, error } = useScenario();
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-400">
+      <div className="flex min-h-screen items-center justify-center bg-slate-100 text-slate-600">
         Wczytywanie scenariusza logistycznego…
       </div>
     );
   }
   if (error) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950 px-6 text-center text-red-400">
+      <div className="flex min-h-screen items-center justify-center bg-slate-100 px-6 text-center text-red-700">
         {error}
       </div>
     );

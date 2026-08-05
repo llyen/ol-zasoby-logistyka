@@ -23,23 +23,23 @@ export function Panel({
 }) {
   const ring =
     tone === 'alert'
-      ? 'ring-red-500/30 shadow-red-950/40'
+      ? 'ring-red-600/30'
       : tone === 'accent'
-        ? 'ring-cyan-500/30 shadow-cyan-950/40'
-        : 'ring-slate-700/60';
+        ? 'ring-gov/30'
+        : 'ring-slate-300';
   return (
     <section
-      className={`rounded-xl bg-slate-900/70 ring-1 ${ring} shadow-lg backdrop-blur-sm ${className}`}
+      className={`rounded-xl bg-white ring-1 ${ring} shadow-lg backdrop-blur-sm ${className}`}
     >
       {(title || right) && (
-        <header className="flex items-start justify-between gap-4 border-b border-slate-700/60 px-4 py-3">
+        <header className="flex items-start justify-between gap-4 border-b border-slate-200 px-4 py-3">
           <div>
             {title && (
-              <h2 className="text-[13px] font-semibold uppercase tracking-wider text-slate-200">
+              <h2 className="text-[13px] font-semibold uppercase tracking-wider text-slate-900">
                 {title}
               </h2>
             )}
-            {subtitle && <p className="mt-0.5 text-xs text-slate-400">{subtitle}</p>}
+            {subtitle && <p className="mt-0.5 text-xs text-slate-500">{subtitle}</p>}
           </div>
           {right}
         </header>
@@ -67,10 +67,10 @@ export function Button({
   title?: string;
 }) {
   const styles = {
-    default: 'bg-slate-800 text-slate-100 ring-1 ring-slate-600 hover:bg-slate-700',
-    primary: 'bg-cyan-500 text-slate-950 font-semibold hover:bg-cyan-400',
-    danger: 'bg-red-600 text-white font-semibold hover:bg-red-500',
-    ghost: 'text-slate-300 hover:bg-slate-800',
+    default: 'bg-slate-50 text-slate-900 ring-1 ring-slate-300 hover:bg-slate-200',
+    primary: 'bg-gov text-white font-semibold hover:bg-gov',
+    danger: 'bg-red-600 text-white font-semibold hover:bg-red-50',
+    ghost: 'text-slate-700 hover:bg-slate-50',
   }[variant];
   return (
     <button
@@ -106,7 +106,7 @@ export function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-slate-400">
+      <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-slate-500">
         {label}
       </span>
       {children}
@@ -116,7 +116,7 @@ export function Field({
 }
 
 export const inputClass =
-  'w-full rounded-lg border-0 bg-slate-800 px-3 py-2 text-sm text-slate-100 ring-1 ring-slate-600 placeholder:text-slate-500 focus:ring-2 focus:ring-cyan-500 focus:outline-none';
+  'w-full rounded-lg border-0 bg-slate-50 px-3 py-2 text-sm text-slate-900 ring-1 ring-slate-300 placeholder:text-slate-500 focus:ring-2 focus:ring-gov focus:outline-none';
 
 export function Toast({ message, onDone }: { message: string | null; onDone: () => void }) {
   useEffect(() => {
@@ -126,7 +126,7 @@ export function Toast({ message, onDone }: { message: string | null; onDone: () 
   }, [message, onDone]);
   if (!message) return null;
   return (
-    <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-xl bg-cyan-500 px-5 py-3 text-sm font-medium text-slate-950 shadow-2xl">
+    <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-xl bg-gov px-5 py-3 text-sm font-medium text-white shadow-2xl">
       {message}
     </div>
   );
@@ -147,12 +147,12 @@ export function Modal({
 }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-40 flex items-start justify-center overflow-y-auto bg-slate-950/80 p-6 backdrop-blur-sm">
+    <div className="fixed inset-0 z-40 flex items-start justify-center overflow-y-auto bg-slate-900/40 p-6 backdrop-blur-sm">
       <div
-        className={`w-full ${wide ? 'max-w-4xl' : 'max-w-2xl'} rounded-2xl bg-slate-900 ring-1 ring-slate-700 shadow-2xl`}
+        className={`w-full ${wide ? 'max-w-4xl' : 'max-w-2xl'} rounded-2xl bg-white ring-1 ring-slate-200 shadow-2xl`}
       >
-        <header className="flex items-center justify-between border-b border-slate-700 px-5 py-3">
-          <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-200">{title}</h3>
+        <header className="flex items-center justify-between border-b border-slate-200 px-5 py-3">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-900">{title}</h3>
           <Button variant="ghost" onClick={onClose}>
             Zamknij
           </Button>
@@ -191,21 +191,21 @@ export function KpiCard({
   const better = delta === null ? false : higherIsWorse ? delta < 0 : delta > 0;
   return (
     <div
-      className={`group relative overflow-hidden rounded-xl bg-slate-900/80 p-4 ring-1 transition-shadow ${
-        emphasis ? 'ring-cyan-500/50 shadow-lg shadow-cyan-950/40' : 'ring-slate-700/60'
+      className={`group relative overflow-hidden rounded-xl bg-white p-4 ring-1 transition-shadow ${
+        emphasis ? 'ring-gov/50 shadow-lg' : 'ring-slate-300'
       }`}
       title={hint}
     >
-      <div className="text-[11px] font-medium uppercase tracking-wider text-slate-400">{label}</div>
+      <div className="text-[11px] font-medium uppercase tracking-wider text-slate-500">{label}</div>
       <div className="mt-1 flex items-baseline gap-2">
-        <span className="text-2xl font-semibold tabular-nums text-slate-50">
+        <span className="text-2xl font-semibold tabular-nums text-slate-900">
           {formatNumber(value)}
           {unit ?? ''}
         </span>
         {delta !== null && delta !== 0 && (
           <span
             className={`text-xs font-medium tabular-nums ${
-              worse ? 'text-red-400' : better ? 'text-emerald-400' : 'text-slate-400'
+              worse ? 'text-red-700' : better ? 'text-emerald-700' : 'text-slate-500'
             }`}
           >
             {delta > 0 ? '▲' : '▼'} {formatNumber(Math.abs(delta))}
@@ -230,7 +230,7 @@ export function Sparkline({
   values,
   height = 32,
   marker,
-  color = '#22d3ee',
+  color = '#0052a5',
 }: {
   values: number[];
   height?: number;
@@ -253,14 +253,14 @@ export function Sparkline({
     <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ height }} className="w-full">
       <path d={area} fill={color} opacity={0.14} />
       <path d={path} fill="none" stroke={color} strokeWidth={2.5} vectorEffect="non-scaling-stroke" />
-      {m && <circle cx={m.x} cy={m.y} r={3} fill={color} stroke="#0f172a" strokeWidth={1.5} />}
+      {m && <circle cx={m.x} cy={m.y} r={3} fill={color} stroke="#ffffff" strokeWidth={1.5} />}
     </svg>
   );
 }
 
 export function BarList({
   rows,
-  color = '#22d3ee',
+  color = '#0052a5',
   unit = '',
 }: {
   rows: { label: string; value: number; hint?: string }[];
@@ -273,13 +273,13 @@ export function BarList({
       {rows.map((r) => (
         <div key={r.label} title={r.hint}>
           <div className="flex items-baseline justify-between text-xs">
-            <span className="truncate text-slate-300">{r.label}</span>
-            <span className="ml-2 tabular-nums text-slate-400">
+            <span className="truncate text-slate-700">{r.label}</span>
+            <span className="ml-2 tabular-nums text-slate-500">
               {formatNumber(Math.round(r.value * 10) / 10)}
               {unit}
             </span>
           </div>
-          <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-slate-800">
+          <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-slate-50">
             <div
               className="h-full rounded-full transition-all duration-500"
               style={{ width: `${(r.value / max) * 100}%`, background: color }}
@@ -319,7 +319,7 @@ export function TimelineBars({
           className="group relative flex-1 rounded-t transition-all"
           style={{
             height: `${Math.max((v / max) * 100, 3)}%`,
-            background: colorFor ? colorFor(v) : '#0e7490',
+            background: colorFor ? colorFor(v) : '#00417f',
             opacity: i === activeIndex ? 1 : 0.45,
             outline: i === activeIndex ? '1px solid rgba(34,211,238,0.9)' : 'none',
           }}
@@ -341,7 +341,7 @@ export type { MapPoint, MapPath, CountryMapProps } from './CountryMap';
 
 export function EmptyState({ text }: { text: string }) {
   return (
-    <div className="rounded-lg border border-dashed border-slate-700 px-4 py-8 text-center text-sm text-slate-500">
+    <div className="rounded-lg border border-dashed border-slate-200 px-4 py-8 text-center text-sm text-slate-500">
       {text}
     </div>
   );

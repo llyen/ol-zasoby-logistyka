@@ -41,26 +41,26 @@ export function AuthPage() {
     : 'Zaloguj przez Microsoft';
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-slate-950">
-      <div className="pointer-events-none absolute -top-40 right-0 h-[520px] w-[520px] rounded-full bg-cyan-500/10 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-40 -left-20 h-[560px] w-[560px] rounded-full bg-blue-700/10 blur-3xl" />
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-slate-100">
+      <div className="pointer-events-none absolute -top-40 right-0 h-[520px] w-[520px] rounded-full bg-gov/10 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-40 -left-20 h-[560px] w-[560px] rounded-full bg-gov/10 blur-3xl" />
 
       <div className="relative flex flex-1 items-center justify-center p-6">
         <div className="w-full max-w-md">
-          <div className="rounded-2xl bg-slate-900/80 p-8 ring-1 ring-slate-700 shadow-2xl backdrop-blur">
+          <div className="rounded-2xl bg-white p-8 ring-1 ring-slate-200 shadow-2xl backdrop-blur">
             <div className="mb-6 flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-500/15 text-cyan-300 ring-1 ring-cyan-500/40">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gov/15 text-gov ring-1 ring-gov/40">
                 <span className="text-base font-bold">24</span>
               </div>
               <div>
-                <h1 className="text-lg font-semibold text-slate-100">COP-24 · Pulpit RZZK</h1>
+                <h1 className="text-lg font-semibold text-slate-900">COP-24 · Pulpit RZZK</h1>
                 <p className="text-xs text-slate-500">
                   Wspólny obraz sytuacji i rejestr decyzji
                 </p>
               </div>
             </div>
 
-            <p className="mb-6 text-sm leading-relaxed text-slate-400">
+            <p className="mb-6 text-sm leading-relaxed text-slate-500">
               Aplikacja demonstracyjna dla Rządowego Zespołu Zarządzania Kryzysowego. Pokazuje, jak
               dane z wielu strumieni układają się w jeden obraz sytuacji, jak powstaje rekomendacja
               poziomu reagowania i jak decyzja jest zapisywana razem z przesłankami.
@@ -70,15 +70,15 @@ export function AuthPage() {
               type="button"
               onClick={handleSignIn}
               disabled={isLoading}
-              className="flex w-full items-center justify-center rounded-xl bg-cyan-500 px-4 py-3 text-sm font-semibold text-slate-950 transition-all hover:bg-cyan-400 disabled:opacity-50"
+              className="flex w-full items-center justify-center rounded-xl bg-gov px-4 py-3 text-sm font-semibold text-white transition-all hover:bg-gov disabled:opacity-50"
             >
               {msLogo}
               {buttonLabel}
             </button>
 
-            {error && <p className="mt-3 text-center text-sm text-red-400">{error}</p>}
+            {error && <p className="mt-3 text-center text-sm text-red-700">{error}</p>}
 
-            <p className="mt-6 text-[11px] leading-relaxed text-slate-600">
+            <p className="mt-6 text-[11px] leading-relaxed text-slate-400">
               Dane w aplikacji są w całości syntetyczne i wygenerowane na potrzeby demonstracji.
             </p>
           </div>

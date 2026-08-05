@@ -75,7 +75,7 @@ export function TransportsPage() {
         .map((t) => ({
           id: t.id,
           points: t.path,
-          color: t.late ? '#f87171' : '#38bdf8',
+          color: t.late ? '#d5233f' : '#0052a5',
         })),
     [visible],
   );
@@ -150,7 +150,7 @@ export function TransportsPage() {
           anchors={anchors}
           paths={paths}
           colorFor={(v) =>
-            v >= alertMin * 2 ? '#dc2626' : v >= alertMin ? '#f97316' : v > 0 ? '#facc15' : '#38bdf8'
+            v >= alertMin * 2 ? '#d5233f' : v >= alertMin ? '#c2410c' : v > 0 ? '#a16207' : '#0052a5'
           }
           legend={[
             { label: 'na czas', value: 0 },
@@ -167,12 +167,12 @@ export function TransportsPage() {
         subtitle="Sortowanie wg opóźnienia, potem priorytetu."
         right={
           <div className="flex items-center gap-2">
-            <label className="flex items-center gap-1.5 text-xs text-slate-400">
+            <label className="flex items-center gap-1.5 text-xs text-slate-500">
               <input
                 type="checkbox"
                 checked={onlyLate}
                 onChange={(e) => setOnlyLate(e.target.checked)}
-                className="accent-cyan-500"
+                className="accent-gov"
               />
               tylko opóźnione
             </label>
@@ -208,7 +208,7 @@ export function TransportsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700 text-left text-[11px] uppercase tracking-wider text-slate-400">
+                <tr className="border-b border-slate-200 text-left text-[11px] uppercase tracking-wider text-slate-500">
                   <th className="py-2 pr-3">P</th>
                   <th className="py-2 pr-3">Transport</th>
                   <th className="py-2 pr-3">Z magazynu</th>
@@ -224,8 +224,8 @@ export function TransportsPage() {
                 {visible.slice(0, 60).map((r) => (
                   <tr
                     key={r.id}
-                    className={`border-b border-slate-800/60 hover:bg-slate-800/40 ${
-                      r.late ? 'bg-red-500/5' : ''
+                    className={`border-b border-slate-200 hover:bg-slate-50 ${
+                      r.late ? 'bg-red-50' : ''
                     }`}
                   >
                     <td className="py-2 pr-3">
@@ -239,21 +239,21 @@ export function TransportsPage() {
                         {r.prio}
                       </span>
                     </td>
-                    <td className="py-2 pr-3 font-mono text-xs text-slate-400">{r.id}</td>
-                    <td className="py-2 pr-3 text-slate-300">{r.whName}</td>
-                    <td className="py-2 pr-3 text-slate-200">{r.gminaName}</td>
-                    <td className="py-2 pr-3 text-slate-300">{r.resName}</td>
-                    <td className="py-2 pr-3 text-right tabular-nums text-slate-300">
+                    <td className="py-2 pr-3 font-mono text-xs text-slate-500">{r.id}</td>
+                    <td className="py-2 pr-3 text-slate-700">{r.whName}</td>
+                    <td className="py-2 pr-3 text-slate-900">{r.gminaName}</td>
+                    <td className="py-2 pr-3 text-slate-700">{r.resName}</td>
+                    <td className="py-2 pr-3 text-right tabular-nums text-slate-700">
                       {formatNumber(r.qty)}
                     </td>
                     <td className="py-2 pr-3">
                       <Badge
                         className={
                           r.status === 'delivered'
-                            ? 'bg-emerald-500/15 text-emerald-300 ring-emerald-500/40'
+                            ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/40'
                             : r.late
-                              ? 'bg-red-500/15 text-red-300 ring-red-500/40'
-                              : 'bg-sky-500/15 text-sky-300 ring-sky-500/40'
+                              ? 'bg-red-50 text-red-700 ring-red-600/40'
+                              : 'bg-gov/15 text-gov ring-gov/40'
                         }
                       >
                         {STATUS_LABEL[r.status] ?? r.status}
@@ -261,7 +261,7 @@ export function TransportsPage() {
                     </td>
                     <td
                       className={`py-2 pr-3 text-right tabular-nums ${
-                        r.late ? 'font-semibold text-red-400' : 'text-slate-500'
+                        r.late ? 'font-semibold text-red-700' : 'text-slate-500'
                       }`}
                     >
                       {r.maxDelay > 0 ? `${r.maxDelay} min` : '—'}
@@ -289,10 +289,10 @@ export function TransportsPage() {
           title="Potwierdzone odbiory"
           subtitle="Niedobory generują ponowne zapotrzebowanie w kolejce wniosków."
         >
-          <ul className="space-y-1.5 text-sm text-slate-300">
+          <ul className="space-y-1.5 text-sm text-slate-700">
             {deliveries.slice(0, 10).map((d) => (
               <li key={d.id} className="flex flex-wrap items-center gap-2">
-                <Badge className="bg-slate-800 text-slate-300 ring-slate-600">
+                <Badge className="bg-slate-50 text-slate-700 ring-slate-300">
                   {d.confirmation_id}
                 </Badge>
                 <span>
@@ -300,7 +300,7 @@ export function TransportsPage() {
                   {formatNumber(d.allocated_qty)}
                 </span>
                 {d.received_qty < d.allocated_qty && (
-                  <span className="text-xs text-amber-300">niedobór: {d.shortage_reason}</span>
+                  <span className="text-xs text-amber-700">niedobór: {d.shortage_reason}</span>
                 )}
                 <span className="text-xs text-slate-500">{d.receiver_name}</span>
               </li>
@@ -316,11 +316,11 @@ export function TransportsPage() {
       >
         {selected && (
           <div className="space-y-4">
-            <div className="rounded-lg bg-slate-800/60 p-3 text-sm text-slate-300">
+            <div className="rounded-lg bg-slate-50 p-3 text-sm text-slate-700">
               {selected.whName} → {selected.gminaName} · {formatNumber(selected.qty)}{' '}
               {selected.resName}
               {selected.maxDelay > 0 && (
-                <span className="ml-2 text-amber-300">opóźnienie {selected.maxDelay} min</span>
+                <span className="ml-2 text-amber-700">opóźnienie {selected.maxDelay} min</span>
               )}
             </div>
             <Field label="Odebrana ilość" hint="Nie może przekraczać ilości przydzielonej.">
@@ -355,7 +355,7 @@ export function TransportsPage() {
               />
             </Field>
             {errors.length > 0 && (
-              <ul className="space-y-1 rounded-lg bg-red-500/10 p-3 text-sm text-red-300">
+              <ul className="space-y-1 rounded-lg bg-red-50 p-3 text-sm text-red-700">
                 {errors.map((e) => (
                   <li key={e}>{e}</li>
                 ))}
@@ -390,14 +390,14 @@ function Metric({
   suffix?: string;
 }) {
   const color = {
-    default: 'text-slate-50',
-    amber: 'text-amber-300',
-    red: 'text-red-400',
-    cyan: 'text-cyan-300',
+    default: 'text-slate-900',
+    amber: 'text-amber-700',
+    red: 'text-red-700',
+    cyan: 'text-gov',
   }[tone];
   return (
-    <div className="rounded-xl bg-slate-900/80 p-4 ring-1 ring-slate-700/60">
-      <div className="text-[11px] font-medium uppercase tracking-wider text-slate-400">{label}</div>
+    <div className="rounded-xl bg-white p-4 ring-1 ring-slate-300">
+      <div className="text-[11px] font-medium uppercase tracking-wider text-slate-500">{label}</div>
       <div className={`mt-1 text-2xl font-semibold tabular-nums ${color}`}>
         {formatNumber(value)}
         {suffix}

@@ -33,11 +33,11 @@ import {
 } from '@/components/ui';
 
 const STATUS_STYLE: Record<DemandRow['status'], string> = {
-  oczekuje: 'bg-amber-500/15 text-amber-300 ring-amber-500/40',
-  przydzielony: 'bg-sky-500/15 text-sky-300 ring-sky-500/40',
-  'w transporcie': 'bg-indigo-500/15 text-indigo-300 ring-indigo-500/40',
-  dostarczony: 'bg-emerald-500/15 text-emerald-300 ring-emerald-500/40',
-  opóźniony: 'bg-red-500/15 text-red-300 ring-red-500/40',
+  oczekuje: 'bg-amber-50 text-amber-700 ring-amber-600/40',
+  przydzielony: 'bg-gov/15 text-gov ring-gov/40',
+  'w transporcie': 'bg-gov/15 text-gov ring-gov/40',
+  dostarczony: 'bg-emerald-50 text-emerald-700 ring-emerald-600/40',
+  opóźniony: 'bg-red-50 text-red-700 ring-red-600/40',
 };
 
 const DECISION_LABEL: Record<ApprovalKind, string> = {
@@ -185,7 +185,7 @@ export function DemandsPage() {
             <select
               value={prioFilter}
               onChange={(e) => setPrioFilter(e.target.value)}
-              className="rounded-lg bg-slate-800 px-2 py-1 text-xs text-slate-200 ring-1 ring-slate-600"
+              className="rounded-lg bg-slate-50 px-2 py-1 text-xs text-slate-900 ring-1 ring-slate-300"
               aria-label="Priorytet"
             >
               <option value="">wszystkie priorytety</option>
@@ -198,7 +198,7 @@ export function DemandsPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="rounded-lg bg-slate-800 px-2 py-1 text-xs text-slate-200 ring-1 ring-slate-600"
+              className="rounded-lg bg-slate-50 px-2 py-1 text-xs text-slate-900 ring-1 ring-slate-300"
               aria-label="Status"
             >
               <option value="">wszystkie statusy</option>
@@ -208,12 +208,12 @@ export function DemandsPage() {
                 </option>
               ))}
             </select>
-            <label className="flex items-center gap-1.5 text-xs text-slate-400">
+            <label className="flex items-center gap-1.5 text-xs text-slate-500">
               <input
                 type="checkbox"
                 checked={onlyMyScope}
                 onChange={(e) => setOnlyMyScope(e.target.checked)}
-                className="accent-cyan-500"
+                className="accent-gov"
               />
               tylko mój zakres
             </label>
@@ -254,7 +254,7 @@ export function DemandsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700 text-left text-[11px] uppercase tracking-wider text-slate-400">
+                <tr className="border-b border-slate-200 text-left text-[11px] uppercase tracking-wider text-slate-500">
                   <th className="py-2 pr-3">P</th>
                   <th className="py-2 pr-3">Gmina</th>
                   <th className="py-2 pr-3">Zasób</th>
@@ -271,8 +271,8 @@ export function DemandsPage() {
                   return (
                     <tr
                       key={r.id}
-                      className={`border-b border-slate-800/60 hover:bg-slate-800/40 ${
-                        sla ? 'bg-red-500/5' : ''
+                      className={`border-b border-slate-200 hover:bg-slate-50 ${
+                        sla ? 'bg-red-50' : ''
                       }`}
                     >
                       <td className="py-2 pr-3">
@@ -286,17 +286,17 @@ export function DemandsPage() {
                           {r.prio}
                         </span>
                       </td>
-                      <td className="py-2 pr-3 text-slate-200">
+                      <td className="py-2 pr-3 text-slate-900">
                         {r.gminaName}
                         <span className="ml-1 text-xs text-slate-500">{r.voivName}</span>
                       </td>
-                      <td className="py-2 pr-3 text-slate-300">{r.resName}</td>
-                      <td className="py-2 pr-3 text-right tabular-nums text-slate-300">
+                      <td className="py-2 pr-3 text-slate-700">{r.resName}</td>
+                      <td className="py-2 pr-3 text-right tabular-nums text-slate-700">
                         {formatNumber(r.qty)} {r.unit}
                       </td>
                       <td
                         className={`py-2 pr-3 text-right tabular-nums ${
-                          sla ? 'font-semibold text-red-400' : 'text-slate-400'
+                          sla ? 'font-semibold text-red-700' : 'text-slate-500'
                         }`}
                       >
                         {formatHours(r.ageH)}
@@ -336,10 +336,10 @@ export function DemandsPage() {
 
       {approvals.length > 0 && (
         <Panel title="Podjęte decyzje" subtitle="Rejestr bieżącej sesji, w kolejności zapisu.">
-          <ul className="space-y-1.5 text-sm text-slate-300">
+          <ul className="space-y-1.5 text-sm text-slate-700">
             {approvals.slice(0, 10).map((a) => (
               <li key={a.id} className="flex flex-wrap items-center gap-2">
-                <Badge className="bg-slate-800 text-slate-300 ring-slate-600">{a.decision}</Badge>
+                <Badge className="bg-slate-50 text-slate-700 ring-slate-300">{a.decision}</Badge>
                 <span>
                   {a.request_id} · {a.decision_level}
                   {a.escalated_to && ` → ${a.escalated_to}`}
@@ -358,14 +358,14 @@ export function DemandsPage() {
       >
         {decisionFor && (
           <div className="space-y-4">
-            <div className="rounded-lg bg-slate-800/60 p-3 text-sm text-slate-300">
+            <div className="rounded-lg bg-slate-50 p-3 text-sm text-slate-700">
               {decisionFor.gminaName} · {formatNumber(decisionFor.qty)} {decisionFor.unit}{' '}
               {decisionFor.resName} · priorytet {decisionFor.prio} · czeka{' '}
               {formatHours(decisionFor.ageH)}
               {breachesSla(decisionFor) && (
-                <span className="ml-2 font-semibold text-red-400">SLA złamane</span>
+                <span className="ml-2 font-semibold text-red-700">SLA złamane</span>
               )}
-              <p className="mt-1 text-xs text-slate-400">{decisionFor.why}</p>
+              <p className="mt-1 text-xs text-slate-500">{decisionFor.why}</p>
             </div>
             <Field label="Rodzaj decyzji">
               <div className="flex flex-wrap gap-2">
@@ -405,7 +405,7 @@ export function DemandsPage() {
               />
             </Field>
             {errors.length > 0 && (
-              <ul className="space-y-1 rounded-lg bg-red-500/10 p-3 text-sm text-red-300">
+              <ul className="space-y-1 rounded-lg bg-red-50 p-3 text-sm text-red-700">
                 {errors.map((e) => (
                   <li key={e}>{e}</li>
                 ))}
@@ -514,7 +514,7 @@ export function DemandsPage() {
             </Field>
           </div>
           {errors.length > 0 && (
-            <ul className="space-y-1 rounded-lg bg-red-500/10 p-3 text-sm text-red-300 md:col-span-2">
+            <ul className="space-y-1 rounded-lg bg-red-50 p-3 text-sm text-red-700 md:col-span-2">
               {errors.map((e) => (
                 <li key={e}>{e}</li>
               ))}
@@ -548,14 +548,14 @@ function Metric({
   hint?: string;
 }) {
   const color = {
-    default: 'text-slate-50',
-    amber: 'text-amber-300',
-    red: 'text-red-400',
-    cyan: 'text-cyan-300',
+    default: 'text-slate-900',
+    amber: 'text-amber-700',
+    red: 'text-red-700',
+    cyan: 'text-gov',
   }[tone];
   return (
-    <div className="rounded-xl bg-slate-900/80 p-4 ring-1 ring-slate-700/60" title={hint}>
-      <div className="text-[11px] font-medium uppercase tracking-wider text-slate-400">{label}</div>
+    <div className="rounded-xl bg-white p-4 ring-1 ring-slate-300" title={hint}>
+      <div className="text-[11px] font-medium uppercase tracking-wider text-slate-500">{label}</div>
       <div className={`mt-1 text-2xl font-semibold tabular-nums ${color}`}>
         {formatNumber(value)}
       </div>

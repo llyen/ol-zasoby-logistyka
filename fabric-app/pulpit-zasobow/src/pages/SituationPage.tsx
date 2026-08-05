@@ -146,18 +146,18 @@ export function SituationPage() {
         {kpis.map((k) => (
           <div
             key={k.label}
-            className="rounded-xl bg-slate-900/80 p-4 ring-1 ring-slate-700/60"
+            className="rounded-xl bg-white p-4 ring-1 ring-slate-300"
             title={k.hint}
           >
-            <div className="text-[11px] font-medium uppercase tracking-wider text-slate-400">
+            <div className="text-[11px] font-medium uppercase tracking-wider text-slate-500">
               {k.label}
             </div>
             <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-2xl font-semibold tabular-nums text-slate-50">{k.value}</span>
+              <span className="text-2xl font-semibold tabular-nums text-slate-900">{k.value}</span>
               {k.delta !== null && k.delta !== 0 && (
                 <span
                   className={`text-xs font-medium tabular-nums ${
-                    (k.delta > 0) === k.inverse ? 'text-red-400' : 'text-emerald-400'
+                    (k.delta > 0) === k.inverse ? 'text-red-700' : 'text-emerald-700'
                   }`}
                 >
                   {k.delta > 0 ? '▲' : '▼'} {formatNumber(Math.abs(k.delta))}
@@ -193,7 +193,7 @@ export function SituationPage() {
             title="Przebieg scenariusza"
             subtitle="Kliknij słupek, żeby przejść do wybranej doby."
           >
-            <div className="mb-1 flex items-baseline justify-between text-xs text-slate-400">
+            <div className="mb-1 flex items-baseline justify-between text-xs text-slate-500">
               <span>Wnioski otwarte</span>
               <span className="tabular-nums">{formatNumber(openSeries[dayIndex])}</span>
             </div>
@@ -204,11 +204,11 @@ export function SituationPage() {
               onSelect={setDayIndex}
               height={64}
             />
-            <div className="mt-4 mb-1 flex items-baseline justify-between text-xs text-slate-400">
+            <div className="mt-4 mb-1 flex items-baseline justify-between text-xs text-slate-500">
               <span>W tym priorytet 1</span>
               <span className="tabular-nums">{formatNumber(p1Series[dayIndex])}</span>
             </div>
-            <Sparkline values={p1Series} marker={dayIndex} color="#f87171" height={44} />
+            <Sparkline values={p1Series} marker={dayIndex} color="#d5233f" height={44} />
           </Panel>
 
           <Panel
@@ -224,7 +224,7 @@ export function SituationPage() {
                   value: v.p1Open,
                   hint: `${v.open} otwartych z ${v.demands} złożonych (${v.openPct}%), ${v.delayed} transportów opóźnionych`,
                 }))}
-                color="#f87171"
+                color="#d5233f"
               />
             )}
           </Panel>
@@ -238,12 +238,12 @@ export function SituationPage() {
         right={
           <div className="flex gap-2">
             {decision.suggestReserves && (
-              <Badge className="bg-red-500/15 text-red-300 ring-red-500/40">
+              <Badge className="bg-red-50 text-red-700 ring-red-600/40">
                 rekomendacja: rezerwy strategiczne
               </Badge>
             )}
             {decision.suggestSpo2 && (
-              <Badge className="bg-amber-500/15 text-amber-300 ring-amber-500/40">
+              <Badge className="bg-amber-50 text-amber-700 ring-amber-600/40">
                 rozważ wniosek SPO-2
               </Badge>
             )}
@@ -252,16 +252,16 @@ export function SituationPage() {
       >
         <div className="grid gap-4 md:grid-cols-2">
           <div>
-            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-red-300">
+            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-red-700">
               Przesłanki za
             </h3>
             {decision.pros.length === 0 ? (
               <p className="text-sm text-slate-500">Brak sygnałów wymagających działania.</p>
             ) : (
-              <ul className="space-y-1.5 text-sm text-slate-300">
+              <ul className="space-y-1.5 text-sm text-slate-700">
                 {decision.pros.map((p) => (
                   <li key={p} className="flex gap-2">
-                    <span className="text-red-400">▸</span>
+                    <span className="text-red-700">▸</span>
                     <span>{p}</span>
                   </li>
                 ))}
@@ -269,7 +269,7 @@ export function SituationPage() {
             )}
           </div>
           <div>
-            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-emerald-300">
+            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-emerald-700">
               Przesłanki przeciw
             </h3>
             {decision.cons.length === 0 ? (
@@ -277,10 +277,10 @@ export function SituationPage() {
                 Żaden wskaźnik nie przemawia za wstrzymaniem się z decyzją.
               </p>
             ) : (
-              <ul className="space-y-1.5 text-sm text-slate-300">
+              <ul className="space-y-1.5 text-sm text-slate-700">
                 {decision.cons.map((c) => (
                   <li key={c} className="flex gap-2">
-                    <span className="text-emerald-400">▸</span>
+                    <span className="text-emerald-700">▸</span>
                     <span>{c}</span>
                   </li>
                 ))}
@@ -322,7 +322,7 @@ export function SituationPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700 text-left text-[11px] uppercase tracking-wider text-slate-400">
+                <tr className="border-b border-slate-200 text-left text-[11px] uppercase tracking-wider text-slate-500">
                   <th className="py-2 pr-3">Województwo</th>
                   <th className="py-2 pr-3">Zasób</th>
                   <th className="py-2 pr-3 text-right">Pozostało</th>
@@ -336,14 +336,14 @@ export function SituationPage() {
                 {depletion.slice(0, 14).map((r) => (
                   <tr
                     key={`${r.v}-${r.res}`}
-                    className="border-b border-slate-800/60 hover:bg-slate-800/40"
+                    className="border-b border-slate-200 hover:bg-slate-50"
                   >
-                    <td className="py-2 pr-3 text-slate-300">{r.voivName}</td>
-                    <td className="py-2 pr-3 text-slate-200">{r.resName}</td>
-                    <td className="py-2 pr-3 text-right tabular-nums text-slate-300">
+                    <td className="py-2 pr-3 text-slate-700">{r.voivName}</td>
+                    <td className="py-2 pr-3 text-slate-900">{r.resName}</td>
+                    <td className="py-2 pr-3 text-right tabular-nums text-slate-700">
                       {formatNumber(Math.round(r.left))} {r.unit}
                     </td>
-                    <td className="py-2 pr-3 text-right tabular-nums text-slate-400">
+                    <td className="py-2 pr-3 text-right tabular-nums text-slate-500">
                       {formatNumber(Math.round(r.rate))}
                     </td>
                     <td className="py-2 pr-3 text-right">
@@ -357,7 +357,7 @@ export function SituationPage() {
                         {r.dos.toFixed(1)}
                       </span>
                     </td>
-                    <td className="py-2 pr-3 text-xs text-slate-400">{ACTION_LABEL[r.action]}</td>
+                    <td className="py-2 pr-3 text-xs text-slate-500">{ACTION_LABEL[r.action]}</td>
                     <td className="py-2 text-right">
                       <Button
                         variant={r.critical ? 'primary' : 'ghost'}
@@ -382,10 +382,10 @@ export function SituationPage() {
 
       {supply.length > 0 && (
         <Panel title="Zapisane działania zaopatrzeniowe" subtitle="Rejestr bieżącej sesji.">
-          <ul className="space-y-1.5 text-sm text-slate-300">
+          <ul className="space-y-1.5 text-sm text-slate-700">
             {supply.slice(0, 8).map((s) => (
               <li key={s.id} className="flex flex-wrap items-center gap-2">
-                <Badge className="bg-slate-800 text-slate-300 ring-slate-600">{s.action_id}</Badge>
+                <Badge className="bg-slate-50 text-slate-700 ring-slate-300">{s.action_id}</Badge>
                 <span>
                   {s.resource_name} · {s.quantity} szt. · {ACTION_LABEL[s.action_type]}
                 </span>
@@ -405,7 +405,7 @@ export function SituationPage() {
       >
         {selected && (
           <div className="space-y-4">
-            <div className="rounded-lg bg-slate-800/60 p-3 text-sm text-slate-300">
+            <div className="rounded-lg bg-slate-50 p-3 text-sm text-slate-700">
               {selected.voivName} · zapas na {selected.dos.toFixed(1)} dnia przy zużyciu{' '}
               {formatNumber(Math.round(selected.rate))} {selected.unit} na dobę. Rekomendowane
               działanie: <strong>{ACTION_LABEL[selected.action]}</strong>.
@@ -443,7 +443,7 @@ export function SituationPage() {
               />
             </Field>
             {errors.length > 0 && (
-              <ul className="space-y-1 rounded-lg bg-red-500/10 p-3 text-sm text-red-300">
+              <ul className="space-y-1 rounded-lg bg-red-50 p-3 text-sm text-red-700">
                 {errors.map((e) => (
                   <li key={e}>{e}</li>
                 ))}

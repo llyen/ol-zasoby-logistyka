@@ -282,13 +282,13 @@ export function CountryMap({
       >
         <defs>
           <radialGradient id="cm-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#0ea5e9" stopOpacity="0.20" />
-            <stop offset="100%" stopColor="#0ea5e9" stopOpacity="0" />
+            <stop offset="0%" stopColor="#0052a5" stopOpacity="0.20" />
+            <stop offset="100%" stopColor="#0052a5" stopOpacity="0" />
           </radialGradient>
         </defs>
 
         {/* Tlo rysowane z nadmiarem, zeby przy przesunieciu nie odslonic krawedzi. */}
-        <rect x={-50} y={-50} width={200} height={200} fill="#0b1220" />
+        <rect x={-50} y={-50} width={200} height={200} fill="#eef2f7" />
         <rect x={-50} y={-50} width={200} height={200} fill="url(#cm-glow)" />
 
         <g>
@@ -299,7 +299,7 @@ export function CountryMap({
                 key={region.name}
                 d={region.path}
                 fill={on ? 'rgba(14,165,233,0.16)' : 'rgba(30,41,59,0.75)'}
-                stroke={on ? '#38bdf8' : '#475569'}
+                stroke={on ? '#0052a5' : '#c3ced9'}
                 strokeWidth={(on ? 0.28 : 0.16) * s}
                 strokeLinejoin="round"
               />
@@ -318,7 +318,7 @@ export function CountryMap({
                 y={region.cy}
                 textAnchor="middle"
                 fontSize={1.6 * s}
-                fill="#64748b"
+                fill="#94a3b8"
                 className="select-none uppercase"
                 style={{ letterSpacing: `${0.12 * s}px` }}
               >
@@ -353,7 +353,7 @@ export function CountryMap({
                   width={2.2 * s}
                   height={2.2 * s}
                   fill="none"
-                  stroke="#94a3b8"
+                  stroke="#64748b"
                   strokeWidth={0.35 * s}
                   opacity={0.9}
                   onMouseEnter={() => setHover(a)}
@@ -365,7 +365,7 @@ export function CountryMap({
                     y={p.y - 2.0 * s}
                     textAnchor="middle"
                     fontSize={1.5 * s}
-                    fill="#cbd5e1"
+                    fill="#334155"
                     className="select-none"
                     pointerEvents="none"
                   >
@@ -399,7 +399,7 @@ export function CountryMap({
                   cy={p.y}
                   r={r}
                   fill={colorFor(pt.value)}
-                  stroke={selected ? '#f8fafc' : 'rgba(15,23,42,0.6)'}
+                  stroke={selected ? '#0f172a' : 'rgba(15,23,42,0.6)'}
                   strokeWidth={(selected ? 0.6 : 0.2) * s}
                   opacity={0.92}
                   onMouseEnter={() => setHover(pt)}
@@ -416,13 +416,13 @@ export function CountryMap({
       </svg>
 
       {hover && (
-        <div className="pointer-events-none absolute left-3 top-3 rounded-lg bg-slate-950/90 px-3 py-2 text-xs ring-1 ring-slate-700">
-          <div className="font-semibold text-slate-100">{hover.label}</div>
-          {hover.detail && <div className="mt-0.5 text-slate-400">{hover.detail}</div>}
+        <div className="pointer-events-none absolute left-3 top-3 rounded-lg bg-slate-100 px-3 py-2 text-xs ring-1 ring-slate-200">
+          <div className="font-semibold text-slate-900">{hover.label}</div>
+          {hover.detail && <div className="mt-0.5 text-slate-500">{hover.detail}</div>}
         </div>
       )}
 
-      <div className="absolute right-2 top-2 flex flex-col overflow-hidden rounded-lg ring-1 ring-slate-700">
+      <div className="absolute right-2 top-2 flex flex-col overflow-hidden rounded-lg ring-1 ring-slate-200">
         <MapButton label="Przybliż" onClick={() => zoomBy(1.5)} disabled={view.w <= MIN_W + 1e-6}>
           +
         </MapButton>
@@ -435,13 +435,13 @@ export function CountryMap({
       </div>
 
       {!atFullView && (
-        <div className="pointer-events-none absolute right-2 top-[7.25rem] rounded bg-slate-950/80 px-1.5 py-0.5 text-[10px] tabular-nums text-slate-400 ring-1 ring-slate-700">
+        <div className="pointer-events-none absolute right-2 top-[7.25rem] rounded bg-slate-100 px-1.5 py-0.5 text-[10px] tabular-nums text-slate-600 ring-1 ring-slate-200">
           {zoom.toFixed(1)}×
         </div>
       )}
 
       {legend && legend.length > 0 && (
-        <div className="pointer-events-none absolute bottom-2 right-2 flex items-center gap-2 rounded-lg bg-slate-950/80 px-3 py-1.5 text-[10px] text-slate-400 ring-1 ring-slate-700">
+        <div className="pointer-events-none absolute bottom-2 right-2 flex items-center gap-2 rounded-lg bg-slate-100 px-3 py-1.5 text-[10px] text-slate-600 ring-1 ring-slate-200">
           {legend.map((l) => (
             <span key={l.label} className="flex items-center gap-1">
               <span
@@ -454,7 +454,7 @@ export function CountryMap({
         </div>
       )}
 
-      <div className="pointer-events-none absolute bottom-2 left-2 text-[10px] text-slate-600">
+      <div className="pointer-events-none absolute bottom-2 left-2 text-[10px] text-slate-400">
         kółko myszy — przybliżenie · przeciągnij — przesuń · dwuklik — przybliż
       </div>
     </div>
@@ -479,7 +479,7 @@ function MapButton({
       aria-label={label}
       onClick={onClick}
       disabled={disabled}
-      className="h-7 w-7 bg-slate-950/85 text-sm leading-none text-slate-300 transition hover:bg-slate-800 hover:text-white disabled:cursor-not-allowed disabled:text-slate-600 disabled:hover:bg-slate-950/85"
+      className="h-7 w-7 bg-slate-100 text-sm leading-none text-slate-700 transition hover:bg-slate-50 hover:text-white disabled:cursor-not-allowed disabled:text-slate-400 disabled:hover:bg-slate-100"
     >
       {children}
     </button>

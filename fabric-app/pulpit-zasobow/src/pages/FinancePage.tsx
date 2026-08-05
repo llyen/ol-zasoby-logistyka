@@ -33,10 +33,10 @@ const STAGE_LABEL: Record<FinanceStage, string> = {
 };
 
 const STATUS_STYLE: Record<string, string> = {
-  zlozony: 'bg-amber-500/15 text-amber-300 ring-amber-500/40',
-  przekazany_dalej: 'bg-sky-500/15 text-sky-300 ring-sky-500/40',
-  zaakceptowany: 'bg-emerald-500/15 text-emerald-300 ring-emerald-500/40',
-  odrzucony: 'bg-red-500/15 text-red-300 ring-red-500/40',
+  zlozony: 'bg-amber-50 text-amber-700 ring-amber-600/40',
+  przekazany_dalej: 'bg-gov/15 text-gov ring-gov/40',
+  zaakceptowany: 'bg-emerald-50 text-emerald-700 ring-emerald-600/40',
+  odrzucony: 'bg-red-50 text-red-700 ring-red-600/40',
 };
 
 export function FinancePage() {
@@ -167,10 +167,10 @@ export function FinancePage() {
         <div className="flex flex-wrap items-center gap-2 text-sm">
           {FINANCE_STAGES.map((s, i) => (
             <span key={s} className="flex items-center gap-2">
-              <span className="rounded-lg bg-slate-800 px-3 py-1.5 text-slate-200 ring-1 ring-slate-600">
+              <span className="rounded-lg bg-slate-50 px-3 py-1.5 text-slate-900 ring-1 ring-slate-300">
                 {STAGE_LABEL[s]}
               </span>
-              {i < FINANCE_STAGES.length - 1 && <span className="text-slate-600">→</span>}
+              {i < FINANCE_STAGES.length - 1 && <span className="text-slate-400">→</span>}
             </span>
           ))}
         </div>
@@ -190,12 +190,12 @@ export function FinancePage() {
               return (
                 <div
                   key={id}
-                  className="flex flex-wrap items-center gap-3 rounded-lg bg-slate-800/40 px-3 py-2"
+                  className="flex flex-wrap items-center gap-3 rounded-lg bg-slate-50 px-3 py-2"
                 >
-                  <Badge className="bg-slate-800 text-slate-300 ring-slate-600">{id}</Badge>
-                  <span className="text-sm text-slate-200">{formatPln(last.amount_pln)}</span>
-                  <span className="text-sm text-slate-400">{last.purpose}</span>
-                  <Badge className={STATUS_STYLE[last.status] ?? 'bg-slate-800 text-slate-300 ring-slate-600'}>
+                  <Badge className="bg-slate-50 text-slate-700 ring-slate-300">{id}</Badge>
+                  <span className="text-sm text-slate-900">{formatPln(last.amount_pln)}</span>
+                  <span className="text-sm text-slate-500">{last.purpose}</span>
+                  <Badge className={STATUS_STYLE[last.status] ?? 'bg-slate-50 text-slate-700 ring-slate-300'}>
                     {STAGE_LABEL[last.stage as FinanceStage] ?? last.stage} · {last.status}
                   </Badge>
                   <span className="text-xs text-slate-500">{trail.length} kroków</span>
@@ -249,7 +249,7 @@ export function FinancePage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700 text-left text-[11px] uppercase tracking-wider text-slate-400">
+                <tr className="border-b border-slate-200 text-left text-[11px] uppercase tracking-wider text-slate-500">
                   <th className="py-2 pr-3">Doba</th>
                   <th className="py-2 pr-3">Wnioskodawca</th>
                   <th className="py-2 pr-3">Województwo</th>
@@ -261,24 +261,24 @@ export function FinancePage() {
               </thead>
               <tbody>
                 {sceneRows.slice(0, 40).map((f) => (
-                  <tr key={f.id} className="border-b border-slate-800/60 hover:bg-slate-800/40">
-                    <td className="py-2 pr-3 tabular-nums text-slate-400">{f.d}</td>
-                    <td className="py-2 pr-3 text-slate-300">{f.by}</td>
-                    <td className="py-2 pr-3 text-slate-200">
+                  <tr key={f.id} className="border-b border-slate-200 hover:bg-slate-50">
+                    <td className="py-2 pr-3 tabular-nums text-slate-500">{f.d}</td>
+                    <td className="py-2 pr-3 text-slate-700">{f.by}</td>
+                    <td className="py-2 pr-3 text-slate-900">
                       {index.voivById.get(f.v)?.name ?? f.v}
                     </td>
                     <td
                       className={`py-2 pr-3 text-right tabular-nums ${
-                        f.amount > HIGH_VALUE_PLN ? 'font-semibold text-amber-300' : 'text-slate-300'
+                        f.amount > HIGH_VALUE_PLN ? 'font-semibold text-amber-700' : 'text-slate-700'
                       }`}
                     >
                       {formatPln(f.amount)}
                     </td>
-                    <td className="py-2 pr-3 text-slate-300">{f.purpose}</td>
+                    <td className="py-2 pr-3 text-slate-700">{f.purpose}</td>
                     <td className="py-2 pr-3 text-xs text-slate-500">{f.path.join(' > ')}</td>
                     <td className="py-2 pr-3">
                       <Badge
-                        className={STATUS_STYLE[f.status] ?? 'bg-slate-800 text-slate-300 ring-slate-600'}
+                        className={STATUS_STYLE[f.status] ?? 'bg-slate-50 text-slate-700 ring-slate-300'}
                       >
                         {f.status}
                       </Badge>
@@ -398,7 +398,7 @@ export function FinancePage() {
             </Field>
           </div>
           {errors.length > 0 && (
-            <ul className="space-y-1 rounded-lg bg-red-500/10 p-3 text-sm text-red-300 md:col-span-2">
+            <ul className="space-y-1 rounded-lg bg-red-50 p-3 text-sm text-red-700 md:col-span-2">
               {errors.map((e) => (
                 <li key={e}>{e}</li>
               ))}
@@ -423,18 +423,18 @@ export function FinancePage() {
         {trailFor && (
           <ol className="space-y-3">
             {financeTrail(finance, trailFor).map((s) => (
-              <li key={s.id} className="rounded-lg bg-slate-800/50 p-3">
+              <li key={s.id} className="rounded-lg bg-slate-50 p-3">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-xs font-semibold text-slate-500">krok {s.step_no}</span>
-                  <Badge className={STATUS_STYLE[s.status] ?? 'bg-slate-800 text-slate-300 ring-slate-600'}>
+                  <Badge className={STATUS_STYLE[s.status] ?? 'bg-slate-50 text-slate-700 ring-slate-300'}>
                     {STAGE_LABEL[s.stage as FinanceStage] ?? s.stage} · {s.status}
                   </Badge>
                   <span className="text-xs text-slate-500">
                     {s.author_name} ({s.author_role})
                   </span>
                 </div>
-                {s.comment && <p className="mt-1.5 text-sm text-slate-300">{s.comment}</p>}
-                <p className="mt-1 font-mono text-[10px] text-slate-600">{s.audit_hash}</p>
+                {s.comment && <p className="mt-1.5 text-sm text-slate-700">{s.comment}</p>}
+                <p className="mt-1 font-mono text-[10px] text-slate-400">{s.audit_hash}</p>
               </li>
             ))}
           </ol>
@@ -456,13 +456,13 @@ function Metric({
   tone?: 'default' | 'amber' | 'cyan';
 }) {
   const color = {
-    default: 'text-slate-50',
-    amber: 'text-amber-300',
-    cyan: 'text-cyan-300',
+    default: 'text-slate-900',
+    amber: 'text-amber-700',
+    cyan: 'text-gov',
   }[tone];
   return (
-    <div className="rounded-xl bg-slate-900/80 p-4 ring-1 ring-slate-700/60">
-      <div className="text-[11px] font-medium uppercase tracking-wider text-slate-400">{label}</div>
+    <div className="rounded-xl bg-white p-4 ring-1 ring-slate-300">
+      <div className="text-[11px] font-medium uppercase tracking-wider text-slate-500">{label}</div>
       <div className={`mt-1 text-2xl font-semibold tabular-nums ${color}`}>{value}</div>
     </div>
   );

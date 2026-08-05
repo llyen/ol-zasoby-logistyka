@@ -757,17 +757,17 @@ export function project(lat: number, lon: number, width: number, height: number)
 }
 
 export function priorityColor(prio: number): string {
-  if (prio === 1) return '#f87171';
-  if (prio === 2) return '#fb923c';
-  if (prio === 3) return '#fbbf24';
-  return '#60a5fa';
+  if (prio === 1) return '#d5233f';
+  if (prio === 2) return '#c2410c';
+  if (prio === 3) return '#a16207';
+  return '#3d7ebf';
 }
 
 export function stockColor(daysOfStock: number, critical: number): string {
-  if (daysOfStock < 1) return '#dc2626';
-  if (daysOfStock < critical) return '#f97316';
-  if (daysOfStock < critical * 2) return '#facc15';
-  return '#4ade80';
+  if (daysOfStock < 1) return '#d5233f';
+  if (daysOfStock < critical) return '#c2410c';
+  if (daysOfStock < critical * 2) return '#a16207';
+  return '#15803d';
 }
 
 /* ------------------------------------------------------------------ */
