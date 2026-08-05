@@ -143,11 +143,36 @@ dzięki czemu w kadrze widać przyrost, a nie całą scenę naraz.
 | Reguła „transport opóźniony” bez trafień | Status `delayed` nigdy nie jest ostatnim stanem transportu (po dostawie wraca `delivered`) — alert liczony jest z odczytów w oknie, a nie ze stanu końcowego |
 | Reguła „priorytet 1 bez obsługi > 2 h” bez trafień | Scena biegnie w tempie 60x, więc 2 h akcji to 2 minuty zegara — próg demonstracyjny przeliczony na oś demo |
 
-## 8. Kroki pozostające do wykonania
+## 8. Fabric App — „Pulpit zasobów”
+
+Aplikacja decyzyjna wdrożona przez Rayfin. Pełny opis: `fabric-app\pulpit-zasobow\README.md`.
+
+| Element | Wartość |
+|---|---|
+| Adres | https://trim-cove-aca76ba030-westeurope.webapp.fabricapps.net |
+| Rayfin Item ID | `2bc222c5-2486-4bc1-9330-8dcc3c6822e0` |
+| Wdrożenie | `deploy-20260805072033-f25cbed1` |
+| Ekrany | Sytuacja zasobowa, Kolejka wniosków, Plan przydziału, Transporty, Środki SPO-2 |
+| Encje zapisu | 6 (`DemandRequest`, `ApprovalDecision`, `AllocationDecision`, `DeliveryConfirmation`, `FinancialRequestStep`, `SupplyAction`) — schemat zaaplikowany przez `rayfin up db apply --force` |
+| Testy | 46 zielonych, w tym regresja KPI względem `allocation_summary.json` |
+
+Odczyt idzie ze statycznej sceny `public/data/scene.json` (1,03 MB) budowanej przez
+`tools\build_scene.py`; zapis — do encji Rayfin. Rozdzielenie warstw sprawia, że demonstracja
+jest deterministyczna i działa nawet przy wstrzymanej pojemności.
+
+**Naprawiony błąd agregacji.** Pierwsza wersja budowy sceny indeksowała plany przydziału
+słownikiem po `demand_id`, przez co przy dostawach dzielonych między magazyny (167 z 420
+wniosków) zostawał tylko ostatni wiersz. Scena podawała 4,31 → 1,78 h zamiast prawidłowych
+**4,27 → 1,70 h**. Notatnik `03_allocation_optimizer.py` grupuje poprawnie i to on jest
+źródłem prawdy; dokumentacja scenariusza była poprawna od początku. Agregacja została
+powtórzona w `build_scene.py`, a dwa testy pilnują zgodności na stałe.
+
+## 9. Kroki pozostające do wykonania
 
 1. **Raport Power BI** — `report\REPORT_SPEC.md`; model semantyczny jest gotowy i zweryfikowany
    (35 miar zwraca wartości zgodne z `datasets\README.md`).
 2. **Data Agent** — instrukcje i przykładowe pytania w `ai\DATA_AGENT.md`.
-3. **Fabric App / Rayfin** — specyfikacja `fabric-app\APP_SPEC.md`, prompt `fabric-app\RAYFIN_PROMPT.md`.
-4. **Powiadomienia Activatora** — reguły KQL działają; kanały powiadomień dokonfigurować w UI
+3. **Powiadomienia Activatora** — reguły KQL działają; kanały powiadomień dokonfigurować w UI
    wg `activator\RULES.md`.
+4. **Przeklikanie aplikacji w portalu Fabric** — potwierdzić logowanie i faktyczny zapis do
+   bazy z poziomu użytkownika.
