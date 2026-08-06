@@ -24,6 +24,7 @@ kroków, którymi zostało ono zbudowane. Służy do odtworzenia wdrożenia i do
 | `OL_LOG_Eventhouse` | Eventhouse | `895d7b28-e5a4-4bbf-a61d-78d6e542c369` |
 | `OL_LOG_Eventhouse` | KQL Database | `c9c80774-af15-4c59-b856-d9d659506820` |
 | `OL_LOG_SemanticModel` | Semantic model (Direct Lake) | `82d61aa6-1ea3-42f5-a9e9-4c5ae4508944` |
+| `OL_LOG_Raport` | Raport Power BI | `517879e5-0c27-44cc-9f9b-d2bfa9fe257a` |
 | `OL_LOG_Dashboard` | Real-Time Dashboard | `8b865c96-4fa9-49b0-8313-a71c175fc23c` |
 | `OL_LOG_Activator` | Activator (Reflex) | `b07883fa-b389-48da-8f3a-d3b0267c0de1` |
 | `01_load_dimensions` … `05_schema_dump` | Notebook (6) | zob. workspace |
