@@ -27,6 +27,7 @@ kroków, którymi zostało ono zbudowane. Służy do odtworzenia wdrożenia i do
 | `OL_LOG_Raport` | Raport Power BI | `517879e5-0c27-44cc-9f9b-d2bfa9fe257a` |
 | `OL_LOG_Dashboard` | Real-Time Dashboard | `8b865c96-4fa9-49b0-8313-a71c175fc23c` |
 | `OL_LOG_Activator` | Activator (Reflex) | `b07883fa-b389-48da-8f3a-d3b0267c0de1` |
+| `agent_zasoby_logistyka` | Data Agent (Zapytaj o dane) | `498ed2ee-8099-4c95-8b3d-62accc4fab7b` |
 | `01_load_dimensions` … `05_schema_dump` | Notebook (6) | zob. workspace |
 
 ## 3. Kolejność wdrożenia
@@ -172,7 +173,10 @@ powtórzona w `build_scene.py`, a dwa testy pilnują zgodności na stałe.
 
 1. **Raport Power BI** — `report\REPORT_SPEC.md`; model semantyczny jest gotowy i zweryfikowany
    (35 miar zwraca wartości zgodne z `datasets\README.md`).
-2. **Data Agent** — instrukcje i przykładowe pytania w `ai\DATA_AGENT.md`.
+2. **Data Agent** — wdrożony (`agent_zasoby_logistyka`, `498ed2ee-8099-4c95-8b3d-62accc4fab7b`)
+   skryptem `deploy\create_data_agent.py` z 3 źródłami (Lakehouse 21 tabel, Eventhouse 15 tabel,
+   model semantyczny 21 tabel); instrukcja systemowa budowana z `ai\DATA_AGENT.md`. Publikację
+   wersji roboczej do produkcyjnej wykonuje się w portalu Fabric.
 3. **Powiadomienia Activatora** — reguły KQL działają; kanały powiadomień dokonfigurować w UI
    wg `activator\RULES.md`.
 4. **Przeklikanie aplikacji w portalu Fabric** — potwierdzić logowanie i faktyczny zapis do

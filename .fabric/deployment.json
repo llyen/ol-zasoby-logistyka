@@ -4,8 +4,11 @@
   "lakehouseName": "OL_LOG_Lakehouse",
   "lakehouseId": "dad1feb6-3eba-431d-8e9f-b00aba44344d",
   "eventhouseId": "895d7b28-e5a4-4bbf-a61d-78d6e542c369",
+  "kqlDatabaseId": "c9c80774-af15-4c59-b856-d9d659506820",
+  "kustoQueryUri": "https://trd-1mgsz6pz0kcbxjcnjw.z9.kusto.fabric.microsoft.com",
   "realtimeDashboardId": "8b865c96-4fa9-49b0-8313-a71c175fc23c",
   "reflexId": "b07883fa-b389-48da-8f3a-d3b0267c0de1",
   "semanticModelId": "82d61aa6-1ea3-42f5-a9e9-4c5ae4508944",
-  "appBackendId": "2bc222c5-2486-4bc1-9330-8dcc3c6822e0"
+  "appBackendId": "2bc222c5-2486-4bc1-9330-8dcc3c6822e0",
+  "dataAgentId": "498ed2ee-8099-4c95-8b3d-62accc4fab7b"
 }
