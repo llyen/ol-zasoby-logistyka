@@ -1,6 +1,6 @@
 # Specyfikacja raportu Power BI
 
-Raport `OL_Logistics_Command_Report` jest produktem decyzyjnym. Ma prowadzić rozmowę od pytania „czym dysponujemy?” do decyzji „co wysłać, gdzie i z jakim finansowaniem?”. Dane są syntetyczne, ale wartości są rzeczywiste dla wygenerowanego zbioru: 960 zapotrzebowań, 16 901 rekordów telemetrii transportów, 4 400 pomiarów obłożenia i 90 wniosków SPO-2.
+Raport `OL_LOG_Raport` jest produktem decyzyjnym. Ma prowadzić rozmowę od pytania „czym dysponujemy?” do decyzji „co wysłać, gdzie i z jakim finansowaniem?”. Dane są syntetyczne, ale wartości są rzeczywiste dla wygenerowanego zbioru: 960 zapotrzebowań, 16 901 rekordów telemetrii transportów, 4 400 pomiarów obłożenia i 90 wniosków SPO-2.
 
 ## Zasady projektowe
 

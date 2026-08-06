@@ -17,7 +17,10 @@ def load_events(base: Path, start, end):
         for line in (base / file).open(encoding="utf-8"):
             item=json.loads(line); ts=datetime.fromisoformat(item["timestamp"])
             if (not start or ts>=start) and (not end or ts<=end):
-                item["_stream"] = file.replace(".jsonl", ""); events.append((ts,item))
+                name = file.replace(".jsonl", "")
+                # `_stream` filtruje lokalnie, `stream` rozgalezia ruch w Eventstreamie
+                # (deploy/create_eventstream.py) - obie nazwy opisuja to samo.
+                item["_stream"] = name; item["stream"] = name; events.append((ts,item))
     return [e for _,e in sorted(events, key=lambda x:x[0])]
 
 def send_eventhub(events, connection_string, eventhub_name):

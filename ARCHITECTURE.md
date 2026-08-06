@@ -56,13 +56,15 @@ Uzasadnienie wyboru: Lakehouse łączy pliki, tabele i notebooki w jednym miejsc
 
 ## Warstwa strumieniowa: Eventstream i Eventhouse
 
-Eventstream przyjmuje strumienie `fact_transport_tracking`, `fact_shelter_occupancy` i `fact_demand`. Lokalny dry-run wybiera 22 261 zdarzeń. W produkcji Eventstream mógłby dostać Custom App endpoint, Azure Event Hub albo konektor do systemu transportowego.
+Eventstream `es_log_transport` przyjmuje strumienie `fact_transport_tracking`, `fact_shelter_occupancy` i `fact_demand`. Wejściem jest custom endpoint, a rozgałęzienie robią trzy filtry po polu `stream`, każdy z własną destynacją w Eventhouse. Lokalny dry-run wybiera 22 261 zdarzeń. W produkcji to samo wejście przyjęłoby Azure Event Hub albo konektor do systemu transportowego bez zmian po stronie destynacji.
+
+Obok tego działa druga droga zasilania: silnik demonstracji `scenario/replay.py` pisze wprost do Eventhouse'u, bo musi sterować osią czasu i tempem odtwarzania. Eventstream pokazuje architekturę docelową, replay — wygodę prezentacji.
 
 Eventhouse / KQL DB obsługuje pytania „co dzieje się teraz”. Funkcje `CurrentTransportPositions()` i `CurrentShelterOccupancy()` używają `arg_max(timestamp, *)`, aby pokazać bieżący stan bez ręcznego przeglądania historii. KQL jest też naturalny dla alertów: transport >30 min, punkt >90%, priorytet 1 >2h bez obsługi, droga nieprzejezdna.
 
 ## Warstwa analityczna: Notebooki
 
-Notebook `02_coverage_analysis.py` liczy najbliższe magazyny i czas dojazdu dla gmin dotkniętych. Wynik: 226 gmin, średnio 0.97 h, P90 1.52 h. Notebook `03_allocation_optimizer.py` jest sercem demo: porównuje FIFO i plan optymalny. Notebook `04_depletion_forecast.py` liczy dni zapasu; w danych występują 23 kombinacje zasób/województwo poniżej 2 dni, najniższy odczyt to 0.2 dnia dla R17 w województwie 02. `05_whatif_simulation.py` daje narracje alternatywne: fala we Wrocławiu, droga A4 nieprzejezdna, zapotrzebowanie +50%.
+Notebook `02_coverage_analysis.py` liczy najbliższe magazyny i czas dojazdu dla gmin dotkniętych. Wynik: 226 gmin, średnio 0.97 h, P90 1.52 h. Notebook `03_allocation_optimizer.py` jest sercem demo: porównuje FIFO i plan optymalny. Notebook `04_depletion_forecast.py` liczy dni zapasu; w danych występują 23 kombinacje zasób/województwo poniżej 2 dni, najniższy odczyt to 0.2 dnia dla R17 w województwie 02. `05_whatif_simulation.py` daje narracje alternatywne: fala we Wrocławiu, droga A4 nieprzejezdna, zapotrzebowanie +50%; ten notatnik uruchamiany jest lokalnie i służy przygotowaniu wariantów rozmowy, nie zasilaniu raportu.
 
 ## Warstwa decyzji: Power BI i Real-Time Dashboard
 

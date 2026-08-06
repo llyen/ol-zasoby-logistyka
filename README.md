@@ -54,12 +54,24 @@ flowchart LR
 
 Szczegóły są w `ARCHITECTURE.md`, a źródłowy diagram w `architecture.mmd`.
 
+## Stan wdrożenia
+
+Scenariusz **działa na Microsoft Fabric** w obszarze roboczym `OL-ZK-Demo-Zasoby`: Lakehouse
+(21 tabel Delta), Eventhouse z ingestią strumieniową, Eventstream `es_log_transport`, model
+semantyczny Direct Lake (35 miar), raport `OL_LOG_Raport` (6 stron), Real-Time Dashboard
+(20 kafelków), Activator, Data Agent `agent_zasoby_logistyka` i aplikacja `pulpit-zasobow`.
+
+Identyfikatory elementów, adres aplikacji, zweryfikowane liczności i napotkane problemy:
+`DEPLOYMENT_STATUS.md`. Odtworzenie środowiska krok po kroku: `SETUP_FABRIC.md`.
+
 ## Zawartość repozytorium
 
 | Ścieżka | Opis |
 |---|---|
 | `generate_datasets.py` | Generator danych syntetycznych. |
 | `simulate_realtime.py` | Symulator Eventstream; `--dry-run` bez zależności Azure. |
+| `deploy\` | Skrypty wdrożeniowe Fabric (items, KQL, notatniki, model, raport, dashboard, Activator, Data Agent, Eventstream). |
+| `scenario\` | Silnik odtwarzania osi czasu dla demonstracji na żywo. |
 | `datasets\` | CSV/JSONL i wyniki `derived`. |
 | `kql\01_create_tables.kql` | Tabele i mappingi KQL. |
 | `kql\02_update_policies.kql` | Funkcje bieżącego stanu. |
@@ -71,6 +83,7 @@ Szczegóły są w `ARCHITECTURE.md`, a źródłowy diagram w `architecture.mmd`.
 | `fabric-app\` | Specyfikacja aplikacji i prompt Rayfin. |
 | `activator\RULES.md` | Reguły alertowe. |
 | `ai\DATA_AGENT.md` | Instrukcje Data Agent. |
+| `fabric-app\pulpit-zasobow\` | Kod wdrożonej aplikacji (React + Rayfin). |
 
 ## Rzeczywiste liczby rekordów
 

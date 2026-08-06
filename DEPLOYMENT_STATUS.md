@@ -27,6 +27,7 @@ kroków, którymi zostało ono zbudowane. Służy do odtworzenia wdrożenia i do
 | `OL_LOG_Raport` | Raport Power BI | `517879e5-0c27-44cc-9f9b-d2bfa9fe257a` |
 | `OL_LOG_Dashboard` | Real-Time Dashboard | `8b865c96-4fa9-49b0-8313-a71c175fc23c` |
 | `OL_LOG_Activator` | Activator (Reflex) | `b07883fa-b389-48da-8f3a-d3b0267c0de1` |
+| `es_log_transport` | Eventstream | `9abfe27c-4262-43ff-8d20-d4ac1123f10f` |
 | `agent_zasoby_logistyka` | Data Agent (Zapytaj o dane) | `498ed2ee-8099-4c95-8b3d-62accc4fab7b` |
 | `01_load_dimensions` … `05_schema_dump` | Notebook (6) | zob. workspace |
 
@@ -62,7 +63,16 @@ kroków, którymi zostało ono zbudowane. Służy do odtworzenia wdrożenia i do
 # 8. Reguły alertowe jako funkcje KQL + element Activator
 .\deploy\create_activator.ps1
 
-# 9. Symulacja czasu rzeczywistego (tryb ciągły, w tle)
+# 9. Model semantyczny -> raport Power BI (6 stron) i Data Agent (3 źródła)
+python deploy\create_report.py
+python deploy\verify_report.py
+python deploy\create_data_agent.py
+
+# 10. Eventstream: custom endpoint -> filtry -> trzy tabele Eventhouse
+python deploy\create_eventstream.py
+python deploy\verify_eventstream.py
+
+# 11. Symulacja czasu rzeczywistego (tryb ciągły, w tle)
 .\scenario\run_scenario.ps1 -Preset ciagly -Background
 ```
 
@@ -106,9 +116,35 @@ Wyniki modeli (notatniki `02`–`04`): `coverage_analysis`, `coverage_summary`, 
 
 ## 6. Ścieżka real-time
 
+Zasilanie czasu rzeczywistego ma **dwie drogi** i warto je rozróżniać przy demonstracji:
+
 ```
-scenario/replay.py  ──►  streaming ingestion Eventhouse  ──►  Real-Time Dashboard (okno 15 min)
+scenario/replay.py       ──►  streaming ingestion Eventhouse  ──►  Real-Time Dashboard
+simulate_realtime.py     ──►  es_log_transport (custom endpoint)
+                              ├─ stream == fact_transport_tracking ─► TransportTracking
+                              ├─ stream == fact_shelter_occupancy  ─► ShelterOccupancy
+                              └─ stream == fact_demand             ─► Demand
 ```
+
+`scenario/replay.py` to silnik demonstracji: pisze wprost do Eventhouse'u, bo musi sterować
+osią czasu i tempem. `es_log_transport` pokazuje docelową architekturę przyjmowania zdarzeń
+z zewnątrz — jedno wejście typu custom endpoint, rozgałęzienie filtrem po polu `stream`
+i trzy destynacje. Symulator `simulate_realtime.py` dokleja to pole do każdego zdarzenia.
+
+```powershell
+python deploy\create_eventstream.py --keys     # connection string do zmiennych środowiskowych
+python deploy\verify_eventstream.py            # test dymny: 5 zdarzeń na strumień
+$env:EVENTHUB_CONNECTION_STRING = "<z --keys>"
+$env:EVENTHUB_NAME = "<z --keys>"
+python simulate_realtime.py --speed 120
+```
+
+Destynacja pracuje w trybie `ProcessedIngestion`, więc mapuje pola JSON na kolumny **po
+nazwach** — dlatego kieruje się ją na tabele typowane, a nie na bufor `RawEvents` (kolumna
+`payload: dynamic`; żaden klucz JSON by nie pasował, destynacja przeszłaby w stan `Warning`
+i po cichu gubiła zdarzenia). `verify_eventstream.py` przechodzi całą drogę zdarzenia i
+sprawdza, że każda tabela dostała dokładnie tyle wierszy, ile powinna — błędny filtr nie
+powoduje błędu wdrożenia, tylko cichą utratę danych.
 
 Silnik odtwarzania kompresuje dobę scenariusza do 24 minut zegara (`--speed 60`) i **przypina
 oś czasu do chwili uruchomienia**, dlatego dashboard pokazuje świeże dane niezależnie od pory
@@ -144,6 +180,9 @@ dzięki czemu w kadrze widać przyrost, a nie całą scenę naraz.
 | `TableSetOrReplace` w stanie `Throttled` przy przesuwaniu osi czasu | F8 z aktywnymi widokami zmaterializowanymi dławi operację; przesunięcie ponawiane jest do 4 razy z rosnącym odstępem |
 | Reguła „transport opóźniony” bez trafień | Status `delayed` nigdy nie jest ostatnim stanem transportu (po dostawie wraca `delivered`) — alert liczony jest z odczytów w oknie, a nie ze stanu końcowego |
 | Reguła „priorytet 1 bez obsługi > 2 h” bez trafień | Scena biegnie w tempie 60x, więc 2 h akcji to 2 minuty zegara — próg demonstracyjny przeliczony na oś demo |
+| Filtr Eventstreamu przepuszczał zero zdarzeń, mimo poprawnego wdrożenia | `dataType` w warunku filtra to **indeks enuma**, nie nazwa typu: 0=BigInt, 1=Float, 2=Nvarchar(max), 3=DateTime. Dla porównania tekstowego musi być `2` |
+| Destynacja Eventhouse w stanie `Warning`, tabela pusta | `itemId` destynacji to identyfikator **bazy KQL**, nie Eventhouse'u; dodatkowo tryb `ProcessedIngestion` wymaga tabeli typowanej, bo mapuje pola po nazwach |
+| `updateDefinition` Eventstreamu odrzucane bez zmiany | Element bywa w stanie `Creating`/`Updating` — skrypt czeka na `Active` (`wait_stable`), a przed wysyłką zdarzeń na `Running` destynacji, inaczej pierwsze zdarzenia przepadają |
 
 ## 8. Fabric App — „Pulpit zasobów”
 
@@ -171,13 +210,12 @@ powtórzona w `build_scene.py`, a dwa testy pilnują zgodności na stałe.
 
 ## 9. Kroki pozostające do wykonania
 
-1. **Raport Power BI** — `report\REPORT_SPEC.md`; model semantyczny jest gotowy i zweryfikowany
-   (35 miar zwraca wartości zgodne z `datasets\README.md`).
-2. **Data Agent** — wdrożony (`agent_zasoby_logistyka`, `498ed2ee-8099-4c95-8b3d-62accc4fab7b`)
-   skryptem `deploy\create_data_agent.py` z 3 źródłami (Lakehouse 21 tabel, Eventhouse 15 tabel,
-   model semantyczny 21 tabel); instrukcja systemowa budowana z `ai\DATA_AGENT.md`. Publikację
-   wersji roboczej do produkcyjnej wykonuje się w portalu Fabric.
-3. **Powiadomienia Activatora** — reguły KQL działają; kanały powiadomień dokonfigurować w UI
+1. **Powiadomienia Activatora** — reguły KQL działają; kanały powiadomień dokonfigurować w UI
    wg `activator\RULES.md`.
-4. **Przeklikanie aplikacji w portalu Fabric** — potwierdzić logowanie i faktyczny zapis do
+2. **Publikacja Data Agenta** — przejście z wersji roboczej do produkcyjnej wykonuje się
+   w portalu Fabric; API tego kroku nie udostępnia.
+3. **Przeklikanie aplikacji w portalu Fabric** — potwierdzić logowanie i faktyczny zapis do
    bazy z poziomu użytkownika.
+
+Warstwa danych, model semantyczny, raport, dashboard, Activator, Data Agent i Eventstream są
+wdrożone i zweryfikowane skryptami z katalogu `deploy\`.

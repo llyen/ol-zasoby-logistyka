@@ -1,5 +1,10 @@
 # Fabric App — „Rezerwy i Zasoby — Wniosek i Przydział”
 
+> Wdrożona aplikacja nosi nazwę techniczną `pulpit-zasobow` — adres, identyfikatory i stan
+> wdrożenia są w `DEPLOYMENT_STATUS.md` (sekcja 8), a opis implementacji w
+> `fabric-app\pulpit-zasobow\README.md`. Ten dokument jest specyfikacją funkcjonalną,
+> względem której weryfikuje się wygenerowaną aplikację.
+
 Aplikacja operatorska jest kluczowym elementem demo. Raport i dashboard pokazują sytuację, ale aplikacja pozwala działać: złożyć wniosek, zaakceptować go, eskalować, zatwierdzić rekomendację optymalizatora, śledzić transport, potwierdzić odbiór i uruchomić SPO-2. Dane są syntetyczne, ale proces jest zbudowany wokół poziomów reagowania gmina → powiat → wojewoda → minister → RZZK.
 
 ## Role i zakres danych

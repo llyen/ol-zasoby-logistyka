@@ -1,6 +1,6 @@
 # Miary DAX — model semantyczny
 
-Poniższe miary są projektowane dla modelu `OL_Logistics_SemanticModel`. Nazwy tabel odpowiadają docelowym tabelom Lakehouse/Power BI. Każda miara ma opis biznesowy i format.
+Poniższe miary są projektowane dla modelu `OL_LOG_SemanticModel`. Nazwy tabel odpowiadają docelowym tabelom Lakehouse/Power BI. Każda miara ma opis biznesowy i format.
 
 ## 1. Demand Qty
 **Opis:** suma zgłoszonych ilości zasobów. **Format:** liczba całkowita.

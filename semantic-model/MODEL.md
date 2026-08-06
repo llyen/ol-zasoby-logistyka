@@ -1,6 +1,6 @@
 # Model semantyczny — Rezerwy i Zasoby
 
-Model `OL_Logistics_SemanticModel` jest klasycznym modelem gwiazdy z kilkoma faktami współdzielącymi wymiary administracyjne, zasobowe i czasowe. Celem modelu jest obsługa raportu Power BI, pytań Data Agent oraz ekranów decyzyjnych Fabric App. Dane są syntetyczne, ale struktura odpowiada docelowemu modelowi dla RCB/WCZK/ARS.
+Model `OL_LOG_SemanticModel` jest klasycznym modelem gwiazdy z kilkoma faktami współdzielącymi wymiary administracyjne, zasobowe i czasowe. Celem modelu jest obsługa raportu Power BI, pytań Data Agent oraz ekranów decyzyjnych Fabric App. Dane są syntetyczne, ale struktura odpowiada docelowemu modelowi dla RCB/WCZK/ARS.
 
 ## Tabele wymiarów
 

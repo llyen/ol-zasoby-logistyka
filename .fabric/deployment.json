@@ -10,5 +10,6 @@
   "reflexId": "b07883fa-b389-48da-8f3a-d3b0267c0de1",
   "semanticModelId": "82d61aa6-1ea3-42f5-a9e9-4c5ae4508944",
   "appBackendId": "2bc222c5-2486-4bc1-9330-8dcc3c6822e0",
-  "dataAgentId": "498ed2ee-8099-4c95-8b3d-62accc4fab7b"
+  "dataAgentId": "498ed2ee-8099-4c95-8b3d-62accc4fab7b",
+  "eventstreamId": "9abfe27c-4262-43ff-8d20-d4ac1123f10f"
 }

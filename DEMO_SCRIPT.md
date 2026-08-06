@@ -23,12 +23,31 @@
 - W danych jest **149** punktów przyjęcia powyżej 90% pojemności.
 - Wnioski SPO-2: **90** rekordów, suma **357 769 364 PLN**, **37** wniosków powyżej 5 mln PLN.
 
+## Co otworzyć przed demem
+
+Wszystko żyje w workspace `OL-ZK-Demo-Zasoby` (adresy i identyfikatory: `DEPLOYMENT_STATUS.md`).
+
+| Zakładka | Element | Rola w narracji |
+|---|---|---|
+| 1 | Fabric App `pulpit-zasobow` | akty I–IV i VI — tu klikamy |
+| 2 | Real-Time Dashboard `OL_LOG_Dashboard` | akt IV i V — obraz dyżurnego |
+| 3 | Raport `OL_LOG_Raport` | tło liczbowe i plan B |
+| 4 | Data Agent `agent_zasoby_logistyka` | akt VII — pytanie po polsku |
+
+Na 30 minut przed demonstracją uruchom silnik odtwarzania — bez niego dashboard pokazuje dane
+sprzed miesięcy zamiast bieżącego ruchu:
+
+```powershell
+.\deploy\ensure_capacity.ps1
+.\scenario\run_scenario.ps1 -Preset ciagly -Background
+```
+
 ---
 
 ## Akt I. Sytuacja i pierwsze zapotrzebowania
 
 **Obsada:** prezenter oraz „wójt gminy Kłodzko”.  
-**Ekran:** Fabric App, ekran 1 „Złożenie zapotrzebowania”.  
+**Ekran:** Fabric App `pulpit-zasobow`, ekran **Kolejka wniosków** → przycisk złożenia nowego wniosku.  
 **Co kliknąć:** wybierz `gmina_code` dla Kłodzka, zasób `agregaty_pradotworcze`, wpisz ilość, priorytet 1, uzasadnienie „brak zasilania w punkcie przyjęcia i pompowni”, liczba osób objętych działaniem. Następnie przełącz zasób na `woda_butelkowana` i pokaż automatyczną podpowiedź ilości.
 
 **Kwestia do wypowiedzenia:**  
@@ -43,8 +62,8 @@
 ## Akt II. Eskalacja gmina → powiat → wojewoda
 
 **Obsada:** wójt, starosta jako kontekst procesu, wojewoda dolnośląski.  
-**Ekran:** Fabric App, ekran 2 „Kolejka WCZK”.  
-**Co kliknąć:** filtr `priority = 1`, filtr `status = submitted`, sortowanie po wieku wniosku. Otwórz szczegóły wniosku i kliknij `escalate`, powód „brak sił i środków na poziomie powiatu”.
+**Ekran:** Fabric App, ekran **Kolejka wniosków**.  
+**Co kliknąć:** filtr `priority = 1`, filtr `status = submitted`, sortowanie po wieku wniosku. Otwórz szczegóły wniosku i kliknij `escalate`, powód „brak sił i środków na poziomie powiatu”. Zwróć uwagę na wyróżnione złamania SLA — priorytet 1 wymaga uzasadnienia od 20 znaków i liczby osób zagrożonych, więc wniosek nie przejdzie „na skróty”.
 
 **Kwestia do wypowiedzenia:**  
 „To jest moment przewidziany w systemie zarządzania kryzysowego. Gmina i powiat wykorzystały lokalne zasoby, ale skala powodzi przekracza ich możliwości. Wojewoda nie tylko widzi wniosek — widzi też, czy lokalne magazyny mają stany, jaki jest priorytet, kto zgłosił potrzebę i jak długo wniosek czeka.”
@@ -58,8 +77,8 @@
 ## Akt III. Optymalizator proponuje plan przydziału
 
 **Obsada:** dyrektor RCB i Agencja Rezerw Strategicznych.  
-**Ekran:** Fabric App, ekran 3 „Pulpit przydziału RCB/ARS” oraz raport Power BI, strona „Zapotrzebowania i realizacja”.  
-**Co kliknąć:** kafelek `FIFO vs Optimization`, filtr `priority = 1`, otwórz `allocation_plan_optimized.csv` jako tabelę rekomendacji. Kliknij przykład rekomendacji: magazyn, zasób, ilość, ETA.
+**Ekran:** Fabric App, ekran **Plan przydziału**, oraz raport Power BI `OL_LOG_Raport`, strona „Zapotrzebowania i realizacja”.  
+**Co kliknąć:** porównanie rekomendacji optymalizatora z wynikiem reguły „kto pierwszy”, filtr `priority = 1`, otwórz wiersz rekomendacji: magazyn, zasób, ilość, ETA. Pokaż, że odejście od rekomendacji wymaga uzasadnienia.
 
 **Kwestia do wypowiedzenia:**  
 „Teraz dochodzimy do serca demo. Ręczny tryb FIFO jest zrozumiały, ale w kryzysie nie zawsze najlepszy: pierwszy wniosek nie musi być najbliższy magazynowi, a droga może być utrudniona. Optimizer patrzy na dostępność, priorytet, czas, przejezdność i magazyn, a następnie proponuje plan. Wynik jest konkretny: średni czas dostawy spada z 4.27 h do 1.70 h.”
@@ -73,8 +92,8 @@
 ## Akt IV. Akceptacja decyzji i transporty na mapie
 
 **Obsada:** ARS, dyrektor RCB, kierowca/operator logistyczny.  
-**Ekran:** Fabric App, ekran 4 „Śledzenie transportów” oraz Real-Time Dashboard kafelek „Current transport positions”.  
-**Co kliknąć:** w rekomendacji kliknij `accept_plan`, przejdź do mapy, filtr `status = in_transit OR delayed`, kliknij transport z największym `delay_min`.
+**Ekran:** Fabric App, ekran **Transporty**, oraz Real-Time Dashboard `OL_LOG_Dashboard`, kafelek „Current transport positions”.  
+**Co kliknąć:** w rekomendacji zatwierdź plan, przejdź na mapę transportów, filtr `status = in_transit OR delayed`, kliknij transport z największym `delay_min`. Mapę można przybliżać kółkiem myszy, przesuwać przeciągnięciem i wyzerować klawiszem `0`.
 
 **Kwestia do wypowiedzenia:**  
 „To jest kluczowy element zaufania: człowiek zatwierdza rekomendację, a decyzja zapisuje się w historii. Od tego momentu nie rozmawiamy o planie w abstrakcji — transport jest widoczny na mapie, ma ETA, status i opóźnienie. Jeśli kierowca zgłosi przeszkodę, dyżurny widzi ją natychmiast.”
@@ -103,8 +122,8 @@
 ## Akt VI. Prognoza wyczerpania i decyzja o uruchomieniu rezerw strategicznych + SPO-2
 
 **Obsada:** dyrektor RCB, ARS, wojewoda, opcjonalnie minister/MF jako głos decyzyjny.  
-**Ekran:** Fabric App ekran 6 „Czy wystarczy?”, ekran 5 „Wniosek SPO-2”, raport „Prognoza wyczerpania”.  
-**Co kliknąć:** filtr `days_of_stock < 2`, zasób krytyczny, potem `activate_reserves`. Następnie przejdź do SPO-2, wpisz kwotę i pokaż ścieżkę `wojewoda > minister_wiodacy > RZZK > MF`.
+**Ekran:** Fabric App, ekran **Sytuacja zasobowa** (panel „Czy wystarczy?” i prognoza wyczerpania), następnie ekran **Środki SPO-2**; w tle raport, strona „Prognoza wyczerpania”.  
+**Co kliknąć:** filtr `days_of_stock < 2`, zasób krytyczny, potem uruchomienie rezerw — to jedyna akcja zastrzeżona wyłącznie dla roli RCB/ARS. Następnie przejdź do SPO-2, wpisz kwotę i pokaż ścieżkę `wojewoda > minister_wiodacy > RZZK > MF`. Kwota powyżej 5 mln zł nie może zamknąć się na szczeblu wojewody.
 
 **Kwestia do wypowiedzenia:**  
 „Ostatni akt odpowiada na pytanie, które decydent zada zawsze: czy wystarczy. Jeśli prognoza pokazuje mniej niż 2 dni zapasu, sama informacja nie wystarcza — potrzebna jest decyzja o rezerwach strategicznych albo dostawcach ramowych i, jeśli trzeba, uruchomienie SPO-2. W tej aplikacji finanse nie są dokumentem tworzonym po spotkaniu; są elementem tej samej decyzji.”
@@ -115,6 +134,28 @@
 
 ---
 
+---
+
+## Akt VII (opcjonalny, 2 min). Pytanie zadane po polsku
+
+**Obsada:** dyrektor RCB albo osoba z sali.  
+**Ekran:** Data Agent `agent_zasoby_logistyka`.  
+**Co kliknąć:** zadaj pytanie wprost, najlepiej takie, które przyjdzie z sali. Sprawdzone:
+„Ile agregatów prądotwórczych mamy w dolnośląskim?”, „Które punkty przyjęcia są przepełnione?”,
+„Jaki jest efekt optymalizatora?”.
+
+**Kwestia do wypowiedzenia:**  
+„Do tej pory pokazywałem ekrany przygotowane wcześniej. Teraz zadam pytanie, którego nikt nie
+przygotował. Agent ma dostęp do tych samych trzech warstw co raport — Lakehouse, Eventhouse
+i modelu semantycznego — więc odpowiada z danych, a nie z modelu językowego. To jest różnica
+między asystentem, który zgaduje, a takim, który liczy.”
+
+**Co widz zobaczy:** krótką odpowiedź liczbową ze wskazaniem źródła i przypomnieniem, że dane
+są syntetyczne. Warto pokazać, że agent potrafi też powiedzieć „nie mam takich danych” — to
+buduje zaufanie mocniej niż odpowiedź na każde pytanie.
+
+---
+
 ## Wow moments
 
 1. **Jedno pytanie, jeden obraz kraju.** Decydent widzi magazyny, zapotrzebowania, punkty przyjęcia, transporty i finanse razem. To działa, bo odpowiada na problem „arkusze + telefony”.
@@ -122,6 +163,7 @@
 3. **Human-in-the-loop.** System proponuje, ale RCB/ARS akceptuje. To działa na decydenta, bo nie odbiera kompetencji, tylko skraca przygotowanie decyzji.
 4. **Alert z akcją.** Punkt >90% pojemności prowadzi do relokacji i dodatkowych zasobów. To pokazuje, że dashboard nie jest bierny.
 5. **SPO-2 w tym samym procesie.** Decyzja finansowa jest powiązana z brakami zasobów i prognozą, więc łatwiej uzasadnić kwotę i ścieżkę akceptacji.
+6. **Pytanie z sali, odpowiedź z danych.** Data Agent odpowiada po polsku na pytanie, którego nikt nie przygotował, korzystając z tych samych źródeł co raport.
 
 ## Wartość biznesowa
 
@@ -160,6 +202,10 @@ Przejdź na raport Power BI i otwórz `kql/03_dashboard_queries.kql`. Pokaż, ż
 
 ## Checklista przed demo
 
+- [ ] `deploy\ensure_capacity.ps1` — pojemność w stanie `Active`.
+- [ ] `scenario\run_scenario.ps1 -Preset ciagly -Background` uruchomione, log w `scenario\_ciagly.log`.
+- [ ] Data Agent opublikowany w portalu (wersja robocza nie odpowiada gościom).
+- [ ] Cztery zakładki otwarte wg tabeli „Co otworzyć przed demem”.
 - [ ] `python generate_datasets.py` wykonane bez błędów.
 - [ ] `python notebooks\02_coverage_analysis.py` wykonane bez błędów.
 - [ ] `python notebooks\03_allocation_optimizer.py` wykonane bez błędów.
